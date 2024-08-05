@@ -21,7 +21,7 @@ void main(void)
 	ppu_wait_nmi();
 	ppu_off();
 	multi_vram_buffer_horz("Feral Perry's", 13, NTADR_A(10,10));
-	multi_vram_buffer_horz("Puzzle Fest", 11, NTADR_A(11,12));
+	multi_vram_buffer_horz("Puzzle Palace", 11, NTADR_A(10,12));
 	ppu_on_all();
 	
 	game_mode = MODE_TITLE;
