@@ -6,7 +6,7 @@ file	id=2,name="LIB/neslib.s",size=14968,mtime=0x66AF9D75,mod=0
 file	id=3,name="LIB/nesdoug.s",size=11667,mtime=0x66AF9D75,mod=0
 file	id=4,name="MUSIC/famitone2.s",size=27594,mtime=0x66AF9D75,mod=0
 file	id=5,name="perrypuzzler.chr",size=8192,mtime=0x66B00579,mod=0
-file	id=6,name="perrypuzzler.s",size=30794,mtime=0x66B01653,mod=1
+file	id=6,name="perrypuzzler.s",size=30804,mtime=0x66B01707,mod=1
 file	id=7,name="/usr/local/Cellar/cc65/2.19/share/cc65/asminc/longbranch.mac",size=2632,mtime=0x5ED2ADF3,mod=1
 file	id=8,name="/private/tmp/cc65-20211029-72602-uqb2uc/cc65-2.19/asminc/cpu.mac",size=843,mtime=0x5ED2ADF3,mod=6+7+8
 file	id=9,name="/private/tmp/cc65-20211029-72602-uqb2uc/cc65-2.19/asminc/zeropage.inc",size=721,mtime=0x5ED2ADF3,mod=11
@@ -4411,9 +4411,9 @@ mod	id=9,name="pushax.o",file=17,lib=0
 mod	id=10,name="zerobss.o",file=18,lib=0
 mod	id=11,name="zeropage.o",file=19,lib=0
 seg	id=0,name="CODE",start=0x0086E8,size=0x0ED8,addrsize=absolute,type=ro,oname="perrypuzzler.nes",ooffs=1784
-seg	id=1,name="RODATA",start=0x0095C0,size=0x048B,addrsize=absolute,type=ro,oname="perrypuzzler.nes",ooffs=5584
+seg	id=1,name="RODATA",start=0x0095C0,size=0x048D,addrsize=absolute,type=ro,oname="perrypuzzler.nes",ooffs=5584
 seg	id=2,name="BSS",start=0x000304,size=0x00F0,addrsize=absolute,type=rw
-seg	id=3,name="DATA",start=0x000300,size=0x0004,addrsize=absolute,type=rw,oname="perrypuzzler.nes",ooffs=6747
+seg	id=3,name="DATA",start=0x000300,size=0x0004,addrsize=absolute,type=rw,oname="perrypuzzler.nes",ooffs=6749
 seg	id=4,name="ZEROPAGE",start=0x000000,size=0x0062,addrsize=zeropage,type=rw
 seg	id=5,name="NULL",start=0x000000,size=0x0000,addrsize=absolute,type=rw
 seg	id=6,name="HEADER",start=0x000000,size=0x0010,addrsize=absolute,type=ro,oname="perrypuzzler.nes",ooffs=0

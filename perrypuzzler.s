@@ -1181,12 +1181,12 @@ _palette_sp:
 	.byte	$00
 L0405:
 	.byte	$54,$77,$6F,$20,$50,$6C,$61,$79,$65,$72,$20,$47,$61,$6D,$65,$00
+L0453:
+	.byte	$50,$75,$7A,$7A,$6C,$65,$20,$50,$61,$6C,$61,$63,$65,$00
 L0401:
 	.byte	$4E,$6F,$74,$20,$73,$6F,$20,$73,$69,$6D,$70,$6C,$65,$00
 L0449:
 	.byte	$46,$65,$72,$61,$6C,$20,$50,$65,$72,$72,$79,$27,$73,$00
-L0453:
-	.byte	$50,$75,$7A,$7A,$6C,$65,$20,$46,$65,$73,$74,$00
 L0403:
 	.byte	$39,$30,$20,$44,$65,$67,$72,$65,$65,$73,$00
 L03FF:
@@ -2173,7 +2173,7 @@ L05C4:	rts
 	lda     #$4A
 	jsr     _multi_vram_buffer_horz
 ;
-; multi_vram_buffer_horz("Puzzle Fest", 11, NTADR_A(11,12));
+; multi_vram_buffer_horz("Puzzle Palace", 11, NTADR_A(10,12));
 ;
 	jsr     decsp3
 	lda     #<(L0453)
@@ -2186,7 +2186,7 @@ L05C4:	rts
 	ldy     #$00
 	sta     (sp),y
 	ldx     #$21
-	lda     #$8B
+	lda     #$8A
 	jsr     _multi_vram_buffer_horz
 ;
 ; ppu_on_all();
