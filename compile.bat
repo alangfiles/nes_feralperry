@@ -1,6 +1,6 @@
 @echo off
 
-set name="collide"
+set name="perrypuzzler"
 
 set path=%path%;..\bin\
 

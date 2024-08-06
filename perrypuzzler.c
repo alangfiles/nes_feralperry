@@ -5,7 +5,39 @@
 #include "LIB/neslib.h"
 #include "LIB/nesdoug.h"
 #include "Sprites.h" // holds our metasprite data
-#include "collide.h"
+#include "perrypuzzler.h"
+
+/**
+ * Work Needed
+ * 
+ * [] Sound FX
+ * [] Music
+ * [] More Levels
+ * [] add other controller reading logic
+ */
+
+/**
+ * Level ideas:
+ * 1. [Controller] Empty with Flag
+ * 2. [Controller] Maze with Obstacles
+ * 3. [Controller] 90 Degree shift
+ * 4. [Controller] use 2nd controller only
+ * 5. [Controller]+[Controller] use both controllers (one looks one moves, a la smashTV)
+ * 6. [Controller]+[Zapper] block in middle to shoot
+ * 7. [Zapper] Gumshoe style shoot the side of him to move him to the goal? (or Controller on screen to shoot buttons at)
+ * 8. [Controller]+[Zapper] Controller shoots, zapper moves on press down
+ * 9. [Powerpad]+[Controller] Lights out?
+ * 10. [Powerpad]+[Zapper] Lights out-ish, but you have to shoot the lights by turning them on (maybe plus controller)
+ * 11. [NESAdvantage/NESMax] use turbo buttons to move obstacles
+ * 12. [NESAdvantage] use turbo buttons to move obstacles, but somehow different frequencies
+ * 13. [NESAdvantage] read every other command from other controller (aka flip 1/2player switch)
+ * 14. [GameGenie]+[Controller] level shows code, input code to produce flag.
+ * 15. [Controller]+[NES] Sprite limit of 64 with some small 8px barrier to get through
+ * 16. [Controller]+[NES] Buttons swap palette to hide sprite boxes (make them non-collidable)
+ * 17. [Controller]+[NES] push boxes into a row to screw up sprite limit on a line
+ * 18. [Controller]+[NES] restart the system after writing a bunch of bytes to memory, check for them after.
+ */ 
+
 
 void main(void)
 {
@@ -20,8 +52,8 @@ void main(void)
 	set_vram_buffer();
 	ppu_wait_nmi();
 	ppu_off();
-	multi_vram_buffer_horz("Feral Perry's", 13, NTADR_A(10,10));
-	multi_vram_buffer_horz("Puzzle Palace", 11, NTADR_A(10,12));
+	multi_vram_buffer_horz("Feral Perry's", 13, NTADR_A(9,10));
+	multi_vram_buffer_horz("Peripheral Palace", 17, NTADR_A(7,12));
 	ppu_on_all();
 	
 	game_mode = MODE_TITLE;
@@ -46,6 +78,18 @@ void main(void)
 			ppu_wait_nmi();
 			pad1 = pad_poll(0);
 			pad1_new = get_pad_new(0);
+			if (pad1_new & PAD_START)
+			{
+				game_mode = MODE_GAME;
+			}
+		}
+		else if (game_mode == MODE_LEVEL_SELECT)
+		{
+			ppu_wait_nmi();
+			pad1 = pad_poll(0);
+			pad1_new = get_pad_new(0);
+			// move left and right, up and down to select a level
+			// wait til we've got more levels?
 			if (pad1_new & PAD_START)
 			{
 				game_mode = MODE_GAME;

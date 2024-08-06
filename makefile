@@ -27,7 +27,7 @@ crt0.o: crt0.s perrypuzzler.chr
 $(NAME).o: $(NAME).s
 	$(CA65) $(NAME).s -g
 
-$(NAME).s: $(NAME).c Sprites.h collide.h
+$(NAME).s: $(NAME).c Sprites.h perrypuzzler.h
 	$(CC65) -Oirs $(NAME).c --add-source
 
 clean:
