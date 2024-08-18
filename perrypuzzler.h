@@ -36,6 +36,8 @@ unsigned char temp_y;
 unsigned char game_mode;
 unsigned char show_text;
 unsigned char has_moved;
+unsigned char is_moving;
+unsigned char player_moved_frames;
 
 unsigned char local_left;
 unsigned char local_right;

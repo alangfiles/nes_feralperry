@@ -197,15 +197,19 @@ void draw_sprites(void)
 
 void movement(void)
 {
+
+	is_moving = 0;
 	has_moved = 0;
 	if (pad1 & local_left)
 	{
+		is_moving = 1;
 		BoxGuy1.direction = LEFT;
 		BoxGuy1.X -= 1;
 		has_moved = 1;
 	}
 	else if (pad1 & local_right)
 	{
+		is_moving = 1;
 		BoxGuy1.direction = RIGHT;
 		BoxGuy1.X += 1;
 		has_moved = 1;
@@ -222,12 +226,14 @@ void movement(void)
 		BoxGuy1.direction = UP;
 		BoxGuy1.Y -= 1;
 		has_moved = 1;
+		is_moving = 1;
 	}
 	else if (pad1 & local_down && has_moved == 0)
 	{
 		BoxGuy1.direction = DOWN;
 		BoxGuy1.Y += 1;
 		has_moved = 1;
+		is_moving = 1;
 	}
 
 	bg_collision();
@@ -356,19 +362,82 @@ void set_direction(void){
 
 void draw_player_sprite(void)
 {
+	++player_moved_frames;
+	if(player_moved_frames > 32){
+		player_moved_frames = 0;
+	}
+
 	switch (BoxGuy1.direction)
 	{
     case LEFT:
-		pointer2 = _perrystandleft_data;
+			if(is_moving) {
+				if(player_moved_frames < 8){
+					pointer2 = _perrywalkleft0_data;
+				} else if(player_moved_frames < 16){
+					pointer2 = _perrywalkleft1_data;
+				} else if(player_moved_frames < 24) {
+					pointer2 = _perrywalkleft2_data;
+				} else if(player_moved_frames < 32) {
+					pointer2 = _perrywalkleft1_data;
+				} else {
+					pointer2 = _perrywalkleft0_data;
+				}
+			} else {
+				pointer2 = _perrystandleft_data;
+			}
+			
 		break;
     case RIGHT:
-		pointer2 = _perrystandright_data;
+		if(is_moving) {
+			if(player_moved_frames < 8){
+				pointer2 = _perrywalright0_data;
+			} else if(player_moved_frames < 16){
+				pointer2 = _perrywalkright1_data;
+			} else if(player_moved_frames < 24) {
+				pointer2 = _perrywalkright2_data;
+			} else if(player_moved_frames < 32) {
+				pointer2 = _perrywalkright1_data;
+			} else {
+				pointer2 = _perrywalright0_data;
+			}
+		} else {
+			pointer2 = _perrystandright_data;
+		}
+
 		break;
     case UP:
-		pointer2 = _perrywalkup0_data;
+		if(is_moving) {
+			if(player_moved_frames < 8){
+				pointer2 = _perrywalkup0_data;
+			} else if(player_moved_frames < 16){
+				pointer2 = _perrywalkup1_data;
+			} else if(player_moved_frames < 24) {
+				pointer2 = _perrywalkup2_data;
+			} else if(player_moved_frames < 32) {
+				pointer2 = _perrywalkup1_data;
+			} else {
+				pointer2 = _perrywalkup0_data;
+				}
+		} else {
+			pointer2 = _perrywalkup0_data;
+		}
 		break;
     case DOWN:
+		if(is_moving) {
+			if(player_moved_frames < 8){
+				pointer2 = _perrywalkdown0_data;
+			} else if(player_moved_frames < 16){
+				pointer2 = _perrywalkdown1_data;
+			} else if(player_moved_frames < 24) {
+				pointer2 = _perrywalkdown2_data;
+			} else if(player_moved_frames < 32) {
+				pointer2 = _perrywalkdown1_data;
+			} else {
+				pointer2 = _perrywalkdown0_data;
+			}
+		} else {
 			pointer2 = _perrywalkdown0_data;
+		}
 		break;
 		default:
 			pointer2 = _perrystandright_data;
