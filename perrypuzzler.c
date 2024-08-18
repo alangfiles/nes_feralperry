@@ -189,21 +189,26 @@ void draw_sprites(void)
 {
 	// clear all sprites from sprite buffer
 	oam_clear();
-
+     
 	// draw 1 metasprite
-	oam_meta_spr(BoxGuy1.X, BoxGuy1.Y, YellowSpr);
+	draw_player_sprite();
 	oam_meta_spr(level_goal_x[level], level_goal_y[level], GoalFlag);
 }
 
 void movement(void)
 {
+	has_moved = 0;
 	if (pad1 & local_left)
 	{
+		BoxGuy1.direction = LEFT;
 		BoxGuy1.X -= 1;
+		has_moved = 1;
 	}
 	else if (pad1 & local_right)
 	{
+		BoxGuy1.direction = RIGHT;
 		BoxGuy1.X += 1;
+		has_moved = 1;
 	}
  
 	bg_collision();
@@ -212,13 +217,17 @@ void movement(void)
 	if (collision_L)
 		BoxGuy1.X += 1;
 
-	if (pad1 & local_up)
+	if (pad1 & local_up && has_moved == 0)
 	{
+		BoxGuy1.direction = UP;
 		BoxGuy1.Y -= 1;
+		has_moved = 1;
 	}
-	else if (pad1 & local_down)
+	else if (pad1 & local_down && has_moved == 0)
 	{
+		BoxGuy1.direction = DOWN;
 		BoxGuy1.Y += 1;
+		has_moved = 1;
 	}
 
 	bg_collision();
@@ -343,4 +352,27 @@ void set_direction(void){
 		local_left = PAD_DOWN;
 		local_right = PAD_UP;
 	}
+}
+
+void draw_player_sprite(void)
+{
+	switch (BoxGuy1.direction)
+	{
+    case LEFT:
+		pointer2 = _perrystandleft_data;
+		break;
+    case RIGHT:
+		pointer2 = _perrystandright_data;
+		break;
+    case UP:
+		pointer2 = _perrywalkup0_data;
+		break;
+    case DOWN:
+			pointer2 = _perrywalkdown0_data;
+		break;
+		default:
+			pointer2 = _perrystandright_data;
+		break;
+	}
+	oam_meta_spr(BoxGuy1.X, BoxGuy1.Y, pointer2);
 }

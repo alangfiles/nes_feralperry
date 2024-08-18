@@ -35,11 +35,13 @@ unsigned char temp_x;
 unsigned char temp_y;
 unsigned char game_mode;
 unsigned char show_text;
+unsigned char has_moved;
 
 unsigned char local_left;
 unsigned char local_right;
 unsigned char local_up;
 unsigned char local_down;
+const unsigned char * pointer2;
 
 #pragma bss-name(push, "BSS")
 
@@ -47,14 +49,23 @@ unsigned char c_map[240];
 // collision map 
 
 
+enum {
+	LEFT,
+	RIGHT,
+	UP,
+	DOWN
+};
+
 struct BoxGuy {
 	unsigned char X;
 	unsigned char Y;
 	unsigned char width;
 	unsigned char height;
+	unsigned char direction;
 };
 
-struct BoxGuy BoxGuy1 = {64,80,15,14};
+
+struct BoxGuy BoxGuy1 = {64,80,15,14, LEFT};
 
 
 
@@ -122,18 +133,26 @@ const unsigned char level_goal_y[] = {
 
 
 const unsigned char palette_bg[]={
-0x0f, 0x00, 0x10, 0x30, // black, gray, lt gray, white
+0x0A, 0x00, 0x10, 0x30, // green, gray, lt gray, white
 0,0,0,0,
 0,0,0,0,
 0,0,0,0
 }; 
 
-const unsigned char palette_sp[]={
-	0x28, 0x16, 0x13, 0x1c, // black, gray, lt gray, white
-	0x30, 0x12, 0x0f, 0x28, // black, black, yellow
-0,0,0,0,
-0,0,0,0
-}; 
+// const unsigned char palette_sp[]={
+// 	0x28, 0x16, 0x13, 0x1c, // black, gray, lt gray, white
+// 	0x30, 0x12, 0x0f, 0x28, // black, black, yellow
+// 0,0,0,0,
+// 0,0,0,0
+// }; 
+
+// palette_perry puzzle sprites_a
+const unsigned char palette_sp[16]={ 
+	0x0f,0x30,0x0f,0x15,
+	0x0f,0x11,0x21,0x20,
+	0x0f,0x38,0x17,0x07,
+	0x0f,0x1a,0x2a,0x17 
+	};
 
 
 
@@ -147,3 +166,4 @@ void sprite_collision(void);
 void level_up(void);
 void init_level_text(void);
 void set_direction(void);
+void draw_player_sprite(void);
