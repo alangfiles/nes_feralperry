@@ -45,18 +45,16 @@ void main(void)
 	ppu_off(); // screen off
 
 	// load the palettes
-	pal_bg(palette_bg);
-	pal_spr(palette_sp);  
+	pal_bg(palette_perrytileset_a);
+	pal_spr(palette_perrypuzzlesprites_a);  
 	bank_spr(1);
 	set_scroll_y(0xff); // shift the bg down 1 pixel
 	set_vram_buffer();
 	ppu_wait_nmi();
-	ppu_off();
-	multi_vram_buffer_horz("Feral Perry's", 13, NTADR_A(9,10));
-	multi_vram_buffer_horz("Peripheral Palace", 17, NTADR_A(7,12));
-	ppu_on_all();
+
+	init_mode_title();
 	
-	game_mode = MODE_TITLE;
+	
 
 	while (1)
 	{
@@ -138,48 +136,27 @@ void draw_bg(void)
 {
 	ppu_off(); // screen off
 
-	p_maps = All_Collision_Maps[level];
+	p_maps = Level_List[level];
 	// copy the collision map to c_map
 	memcpy(c_map, p_maps, 240);
 
-	// this sets a start position on the BG, top left of screen
-	vram_adr(NAMETABLE_A);
-
-	// draw a row of tiles
-	for (temp_y = 0; temp_y < 15; ++temp_y)
+	// pal_bg(palette_bg);
+	clear_vram_buffer();
+	set_data_pointer(Level_List[level]);
+	set_mt_pointer(metatiles);
+	for (y = 0;; y += 0x20)
 	{
-		for (temp_x = 0; temp_x < 16; ++temp_x)
+		for (x = 0;; x += 0x20)
 		{
-			temp1 = (temp_y << 4) + temp_x;
-
-			if (c_map[temp1])
-			{
-				vram_put(0x10); // wall
-				vram_put(0x10);
-			}
-			else
-			{
-				vram_put(0); // blank
-				vram_put(0);
-			}
+			address = get_ppu_addr(0, x, y);
+			index = (y & 0xf0) + (x >> 4);
+			buffer_4_mt(address, index); // ppu_address, index to the data
+			flush_vram_update2();
+			if (x == 0xe0)
+				break;
 		}
-
-		// draw a second row of tiles
-		for (temp_x = 0; temp_x < 16; ++temp_x)
-		{
-			temp1 = (temp_y << 4) + temp_x;
-
-			if (c_map[temp1])
-			{
-				vram_put(0x10); // wall
-				vram_put(0x10);
-			}
-			else
-			{
-				vram_put(0); // blank
-				vram_put(0);
-			}
-		}
+		if (y == 0xe0)
+			break;
 	}
 
 	ppu_on_all(); // turn on screen
@@ -314,6 +291,15 @@ void level_up(void)
 		level = 0;
 	game_mode = MODE_LEVEL_TITLE;
 	init_level_text();
+}
+
+void init_mode_title(void){
+	//draw the title screen
+	ppu_off();
+	multi_vram_buffer_horz("Feral Perry's", 13, NTADR_A(9,10));
+	multi_vram_buffer_horz("Peripheral Palace", 17, NTADR_A(7,12));
+	ppu_on_all();
+	game_mode = MODE_TITLE;
 }
 
 void init_level_text(void){
