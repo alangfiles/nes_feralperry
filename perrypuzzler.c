@@ -64,6 +64,9 @@ void main(void)
 			ppu_wait_nmi();
 			pad1 = pad_poll(0);
 			pad1_new = get_pad_new(0);
+
+			title_cutscene();
+
 			if (pad1_new & PAD_START)
 			{
 				level = 0; //debug this value
@@ -293,13 +296,78 @@ void level_up(void)
 	init_level_text();
 }
 
+
+#include "MAPS/levels/title.c"
 void init_mode_title(void){
 	//draw the title screen
 	ppu_off();
-	multi_vram_buffer_horz("Feral Perry's", 13, NTADR_A(9,10));
-	multi_vram_buffer_horz("Peripheral Palace", 17, NTADR_A(7,12));
+	// pal_bg(palette_bg);
+	clear_vram_buffer();
+	set_data_pointer(title_0);
+	set_mt_pointer(metatiles);
+	for (y = 0;; y += 0x20)
+	{
+		for (x = 0;; x += 0x20)
+		{
+			address = get_ppu_addr(0, x, y);
+			index = (y & 0xf0) + (x >> 4);
+			buffer_4_mt(address, index); // ppu_address, index to the data
+			flush_vram_update2();
+			if (x == 0xe0)
+				break;
+		}
+		if (y == 0xe0)
+			break;
+	}
 	ppu_on_all();
 	game_mode = MODE_TITLE;
+	frame_count = 0;
+	frame_count2 = 0;
+	BoxGuy1.X = 0;
+	BoxGuy1.Y = 138;
+	BoxGuy1.direction = RIGHT;
+}
+
+void title_cutscene(void){
+	// perry comes out stage left, walks right, looks back, then runs off stage right
+	
+
+	if(frame_count > 254 && frame_count2 > 1 || BoxGuy1.X > 248){
+		return;
+	} else {
+		++frame_count;
+	}
+
+	if(frame_count > 200){
+		++frame_count2;
+		frame_count = 0;
+	}
+
+	if(frame_count2 < 1){
+		return;
+	}
+	
+
+	if(frame_count < 60){
+		is_moving=1;
+		BoxGuy1.X += 1;
+	} else if(frame_count < 80){
+		BoxGuy1.direction = LEFT;
+		is_moving=0;
+	} else if(frame_count < 100){
+		BoxGuy1.direction = RIGHT;
+	} else if(frame_count < 110){
+		BoxGuy1.direction = LEFT;
+		is_moving=0;
+	} else if(frame_count < 120){
+		BoxGuy1.direction = RIGHT;
+	} else if(frame_count < 254 && BoxGuy1.X < 248){
+		BoxGuy1.X += 2;
+	}
+
+	oam_clear();
+	draw_player_sprite();
+
 }
 
 void init_level_text(void){

@@ -38,6 +38,8 @@ unsigned char show_text;
 unsigned char has_moved;
 unsigned char is_moving;
 unsigned char player_moved_frames;
+unsigned char frame_count;
+unsigned char frame_count2;
 
 unsigned char local_left;
 unsigned char local_right;
@@ -400,3 +402,4 @@ void init_level_text(void);
 void set_direction(void);
 void draw_player_sprite(void);
 void init_mode_title(void);
+void title_cutscene(void);
