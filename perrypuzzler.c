@@ -260,7 +260,7 @@ void bg_collision()
 	collision_L = 0;
 	collision_R = 0;
 	collision_U = 0;
-	collision_D = 0;
+	collision_D = 0; 
 
 	temp_x = BoxGuy1.X; // left side
 	temp_y = BoxGuy1.Y; // top side
@@ -372,75 +372,75 @@ void draw_player_sprite(void)
     case LEFT:
 			if(is_moving) {
 				if(player_moved_frames < 8){
-					pointer2 = _perrywalkleft0_data;
+					pointer2 = perrywalkleft0_data;
 				} else if(player_moved_frames < 16){
-					pointer2 = _perrywalkleft1_data;
+					pointer2 = perrywalkleft1_data;
 				} else if(player_moved_frames < 24) {
-					pointer2 = _perrywalkleft2_data;
+					pointer2 = perrywalkleft2_data;
 				} else if(player_moved_frames < 32) {
-					pointer2 = _perrywalkleft1_data;
+					pointer2 = perrywalkleft1_data;
 				} else {
-					pointer2 = _perrywalkleft0_data;
+					pointer2 = perrywalkleft0_data;
 				}
 			} else {
-				pointer2 = _perrystandleft_data;
+				pointer2 = perrystandleft_data;
 			}
 			
 		break;
     case RIGHT:
 		if(is_moving) {
 			if(player_moved_frames < 8){
-				pointer2 = _perrywalright0_data;
+				pointer2 = perrywalkright0_data;
 			} else if(player_moved_frames < 16){
-				pointer2 = _perrywalkright1_data;
+				pointer2 = perrywalkright1_data;
 			} else if(player_moved_frames < 24) {
-				pointer2 = _perrywalkright2_data;
+				pointer2 = perrywalkright2_data;
 			} else if(player_moved_frames < 32) {
-				pointer2 = _perrywalkright1_data;
+				pointer2 = perrywalkright1_data;
 			} else {
-				pointer2 = _perrywalright0_data;
+				pointer2 = perrywalkright0_data;
 			}
 		} else {
-			pointer2 = _perrystandright_data;
+			pointer2 = perrystandright_data;
 		}
 
 		break;
     case UP:
 		if(is_moving) {
 			if(player_moved_frames < 8){
-				pointer2 = _perrywalkup0_data;
+				pointer2 = perrywalkup0_data;
 			} else if(player_moved_frames < 16){
-				pointer2 = _perrywalkup1_data;
+				pointer2 = perrywalkup1_data;
 			} else if(player_moved_frames < 24) {
-				pointer2 = _perrywalkup2_data;
+				pointer2 = perrywalkup2_data;
 			} else if(player_moved_frames < 32) {
-				pointer2 = _perrywalkup1_data;
+				pointer2 = perrywalkup1_data;
 			} else {
-				pointer2 = _perrywalkup0_data;
+				pointer2 = perrywalkup0_data;
 				}
 		} else {
-			pointer2 = _perrywalkup0_data;
+			pointer2 = perrywalkup0_data;
 		}
 		break;
     case DOWN:
 		if(is_moving) {
 			if(player_moved_frames < 8){
-				pointer2 = _perrywalkdown0_data;
+				pointer2 = perrywalkdown0_data;
 			} else if(player_moved_frames < 16){
-				pointer2 = _perrywalkdown1_data;
+				pointer2 = perrywalkdown1_data;
 			} else if(player_moved_frames < 24) {
-				pointer2 = _perrywalkdown2_data;
+				pointer2 = perrywalkdown2_data;
 			} else if(player_moved_frames < 32) {
-				pointer2 = _perrywalkdown1_data;
+				pointer2 = perrywalkdown1_data;
 			} else {
-				pointer2 = _perrywalkdown0_data;
+				pointer2 = perrywalkdown0_data;
 			}
 		} else {
-			pointer2 = _perrywalkdown0_data;
+			pointer2 = perrywalkdown0_data;
 		}
 		break;
 		default:
-			pointer2 = _perrystandright_data;
+			pointer2 = perrystandright_data;
 		break;
 	}
 	oam_meta_spr(BoxGuy1.X, BoxGuy1.Y, pointer2);

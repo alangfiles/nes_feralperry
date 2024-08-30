@@ -67,7 +67,7 @@ struct BoxGuy {
 };
 
 
-struct BoxGuy BoxGuy1 = {64,80,15,14, LEFT};
+struct BoxGuy BoxGuy1 = {64,80,13,14, LEFT};
 
 
 
