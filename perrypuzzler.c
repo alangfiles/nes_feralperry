@@ -295,7 +295,7 @@ void bg_collision()
 
 	coordinates = (temp_x >> 4) + (temp_y & 0xf0); // bottom left
 	collision2 = c_map[coordinates];
-	if (metatile_colision_map[collision2])    
+	if (metatile_colision_map[collision2])
 	{
 		++collision_L;
 		++collision_D;
@@ -338,6 +338,7 @@ void init_mode_title(void){
 		if (y == 0xe0)
 			break;
 	}
+	multi_vram_buffer_horz("Brian And Alan Games", 20, NTADR_A(6,24));
 	ppu_on_all();
 	game_mode = MODE_TITLE;
 	frame_count = 0;
