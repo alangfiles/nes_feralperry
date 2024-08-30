@@ -124,7 +124,7 @@ void main(void)
 			
 
 			movement();
-			sprite_collision();
+			// sprite_collision();
 			draw_sprites();
 			check_start();
 		}
@@ -172,7 +172,6 @@ void draw_sprites(void)
      
 	// draw 1 metasprite
 	draw_player_sprite();
-	oam_meta_spr(level_goal_x[level], level_goal_y[level], GoalFlag);
 }
 
 void movement(void)
@@ -225,12 +224,12 @@ void movement(void)
 
 void sprite_collision(void)
 {
-	if (BoxGuy1.X >= level_goal_x[level]-3 && BoxGuy1.X <= level_goal_x[level]+3
-	&& BoxGuy1.Y >= level_goal_y[level]-3 && BoxGuy1.Y <= level_goal_y[level]+3)
-	{
-		level_up();
-		show_text = 1;
-	}
+	// if (BoxGuy1.X >= level_goal_x[level]-3 && BoxGuy1.X <= level_goal_x[level]+3
+	// && BoxGuy1.Y >= level_goal_y[level]-3 && BoxGuy1.Y <= level_goal_y[level]+3)
+	// {
+	// 	level_up();
+	// 	show_text = 1;
+	// }
 }
 
 void bg_collision()
@@ -245,24 +244,34 @@ void bg_collision()
 	temp_x = BoxGuy1.X; // left side
 	temp_y = BoxGuy1.Y; // top side
 
-	if (temp_y >= 0xf0)
+	if (temp_y >= 0xf0)  
 		return;
 	// y out of range
 
 	coordinates = (temp_x >> 4) + (temp_y & 0xf0); // upper left
-	if (c_map[coordinates])
+	collision2 = c_map[coordinates];
+	if (metatile_colision_map[collision2])
 	{ // find a corner in the collision map
 		++collision_L;
 		++collision_U;
+		if(metatile_colision_map[collision2] == GOAL_FLAG){
+			level_up();
+			show_text = 1;
+		}
 	}
 
 	temp_x = BoxGuy1.X + BoxGuy1.width; // right side
 
 	coordinates = (temp_x >> 4) + (temp_y & 0xf0); // upper right
-	if (c_map[coordinates])
+	collision2 = c_map[coordinates];
+	if (metatile_colision_map[collision2])
 	{
 		++collision_R;
 		++collision_U;
+		if(metatile_colision_map[collision2] == GOAL_FLAG){
+			level_up();
+			show_text = 1;
+		}
 	}
 
 	temp_y = BoxGuy1.Y + BoxGuy1.height; // bottom side
@@ -271,19 +280,29 @@ void bg_collision()
 	// y out of range
 
 	coordinates = (temp_x >> 4) + (temp_y & 0xf0); // bottom right
-	if (c_map[coordinates])
+	collision2 = c_map[coordinates];
+	if (metatile_colision_map[collision2])
 	{
 		++collision_R;
 		++collision_D;
+		if(metatile_colision_map[collision2] == GOAL_FLAG){
+			level_up();
+			show_text = 1;
+		}
 	}
 
 	temp_x = BoxGuy1.X; // left side
 
 	coordinates = (temp_x >> 4) + (temp_y & 0xf0); // bottom left
-	if (c_map[coordinates])
+	collision2 = c_map[coordinates];
+	if (metatile_colision_map[collision2])    
 	{
 		++collision_L;
 		++collision_D;
+		if(metatile_colision_map[collision2] == GOAL_FLAG){
+			level_up();
+			show_text = 1;
+		}
 	}
 }
 

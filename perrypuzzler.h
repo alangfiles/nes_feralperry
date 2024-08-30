@@ -24,6 +24,7 @@ unsigned char collision_L;
 unsigned char collision_R;
 unsigned char collision_U;
 unsigned char collision_D;
+unsigned char collision2;
 unsigned char level;
 const unsigned char * p_maps;
 unsigned char coordinates;
@@ -387,6 +388,25 @@ const unsigned char palette_perrytileset_a[16]={ 0x1a,0x30,0x0f,0x15,0x1a,0x21,0
 	97, 110, 105, 97,  0,
 	0, 38, 110, 0,  0};
 
+#define COL_ALL 1
+#define GOAL_FLAG 2
+
+const unsigned char metatile_colision_map[] = {
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, COL_ALL, COL_ALL, COL_ALL, COL_ALL, COL_ALL, COL_ALL, COL_ALL, COL_ALL, COL_ALL, COL_ALL, COL_ALL, COL_ALL, COL_ALL, COL_ALL, COL_ALL,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, GOAL_FLAG, COL_ALL, 0, COL_ALL, COL_ALL,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, COL_ALL,
+		0, 0, 0, 0, 0, 0, 0, COL_ALL, COL_ALL, COL_ALL, COL_ALL, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, COL_ALL, 0, COL_ALL, COL_ALL, COL_ALL, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, COL_ALL, COL_ALL, COL_ALL, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 
 
