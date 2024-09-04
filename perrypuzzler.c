@@ -70,8 +70,8 @@ void main(void)
 			if (pad1_new & PAD_START)
 			{
 				level = 0; //debug this value
-				init_level_text();
-				game_mode = MODE_LEVEL_TITLE;
+				init_level();
+				game_mode = MODE_GAME;
 			}
 		}
 		else if (game_mode == MODE_GAME_OVER)
@@ -96,20 +96,6 @@ void main(void)
 				game_mode = MODE_GAME;
 			}
 		}
-		else if (game_mode == MODE_LEVEL_TITLE)
-		{  
-			oam_clear();
-			// draw a blank background with the text provided
-			ppu_wait_nmi();
-			pad1 = pad_poll(0);
-			pad1_new = get_pad_new(0);
-			if (pad1_new & PAD_START)
-			{
-				game_mode = MODE_GAME;
-				draw_bg(); 
-				set_direction();
-			}
-		}
 		else if (game_mode == MODE_GAME)
 		{
 			ppu_wait_nmi();
@@ -123,7 +109,6 @@ void main(void)
 			}
 			movement();
 			draw_sprites();
-			check_start();
 		}
 		else if (game_mode == MODE_LEVEL_END)
 		{
@@ -323,8 +308,9 @@ void level_up(void)
 	++level;
 	if (level >= 4)
 		level = 0;
-	game_mode = MODE_LEVEL_TITLE;
-	init_level_text();
+
+	init_level();
+	
 }
 
 #include "MAPS/levels/title.c"
@@ -401,35 +387,20 @@ void title_cutscene(void){
 
 }
 
-void init_level_text(void){
+void init_level(void){
 	BoxGuy1.X = level_player_x[level];
 	BoxGuy1.Y = level_player_y[level];
 	oam_clear();
 	ppu_off();
-	vram_adr(NAMETABLE_A);
-	vram_fill(0, 0x1000);
-	ppu_wait_nmi();
 
-	multi_vram_buffer_horz("Level", 5, NTADR_A(3,7));
-	// multi_vram_buffer_horz(, 2, NTADR_A(9,7));
-	one_vram_buffer(49+level, NTADR_A(9,7));
-
-	multi_vram_buffer_horz(level_text[level], level_text_length[level], NTADR_A(3,10));
+	game_mode = MODE_GAME;
+	draw_bg(); 
+	multi_vram_buffer_horz("Level", 5, NTADR_A(3,1));
+	one_vram_buffer(49+level, NTADR_A(9,1));
+	multi_vram_buffer_horz(level_text[level], level_text_length[level], NTADR_A(3,2));
+	set_direction();
 	ppu_on_all();
 	pal_fade_to(0, 4);
-}
-
-void check_start(void)
-{
-	// if START is pressed, load another background
-	if (pad1_new & PAD_START)
-	{
-		++level;
-		if (level >= 4)
-			level = 0;
-		game_mode = MODE_LEVEL_TITLE;
-		init_level_text();
-	}
 }
 
 void set_direction(void){
