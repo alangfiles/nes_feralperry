@@ -121,13 +121,22 @@ void main(void)
 				pad1 = pad_poll(0);				 // read the first controller
 				pad1_new = get_pad_new(0); // newly pressed button. do pad_poll first
 			}
-			
-
 			movement();
-			// sprite_collision();
 			draw_sprites();
 			check_start();
 		}
+		else if (game_mode == MODE_LEVEL_END)
+		{
+			for(index = 0; index < 100; ++index){
+				ppu_wait_nmi();
+			}
+			
+			pal_fade_to(4, 0); // fade to black
+			level_up();
+			//move to center of tile
+			// draw_sprites();
+			//animate out
+		}	
 		else
 		{
 			game_mode = MODE_TITLE;
@@ -227,7 +236,7 @@ void sprite_collision(void)
 	// if (BoxGuy1.X >= level_goal_x[level]-3 && BoxGuy1.X <= level_goal_x[level]+3
 	// && BoxGuy1.Y >= level_goal_y[level]-3 && BoxGuy1.Y <= level_goal_y[level]+3)
 	// {
-	// 	level_up();
+	// 	init_mode_level_end();
 	// 	show_text = 1;
 	// }
 }
@@ -255,8 +264,7 @@ void bg_collision()
 		++collision_L;
 		++collision_U;
 		if(metatile_colision_map[collision2] == GOAL_FLAG){
-			level_up();
-			show_text = 1;
+			init_mode_level_end();
 		}
 	}
 
@@ -269,7 +277,7 @@ void bg_collision()
 		++collision_R;
 		++collision_U;
 		if(metatile_colision_map[collision2] == GOAL_FLAG){
-			level_up();
+			init_mode_level_end();
 			show_text = 1;
 		}
 	}
@@ -286,7 +294,7 @@ void bg_collision()
 		++collision_R;
 		++collision_D;
 		if(metatile_colision_map[collision2] == GOAL_FLAG){
-			level_up();
+			init_mode_level_end();
 			show_text = 1;
 		}
 	}
@@ -300,10 +308,14 @@ void bg_collision()
 		++collision_L;
 		++collision_D;
 		if(metatile_colision_map[collision2] == GOAL_FLAG){
-			level_up();
+			init_mode_level_end();
 			show_text = 1;
 		}
 	}
+}
+
+void init_mode_level_end(void){
+	game_mode = MODE_LEVEL_END;
 }
 
 void level_up(void)
@@ -314,7 +326,6 @@ void level_up(void)
 	game_mode = MODE_LEVEL_TITLE;
 	init_level_text();
 }
-
 
 #include "MAPS/levels/title.c"
 void init_mode_title(void){
@@ -405,6 +416,7 @@ void init_level_text(void){
 
 	multi_vram_buffer_horz(level_text[level], level_text_length[level], NTADR_A(3,10));
 	ppu_on_all();
+	pal_fade_to(0, 4);
 }
 
 void check_start(void)

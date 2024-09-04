@@ -7,6 +7,7 @@ enum
 	MODE_SWITCH,
 	MODE_END,
 	MODE_LEVEL_TITLE,
+	MODE_LEVEL_END,
 	MODE_LEVEL_SELECT,
 	MODE_GAME_OVER,
 	MODE_RESET
@@ -423,3 +424,4 @@ void set_direction(void);
 void draw_player_sprite(void);
 void init_mode_title(void);
 void title_cutscene(void);
+void init_mode_level_end(void);
