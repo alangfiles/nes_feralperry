@@ -14,8 +14,9 @@
  * [] Music
  * [] More Levels
  * [] add other controller reading logic
+ * [] update title screen
  */
-
+  
 /**
  * Level ideas:
  * 1. [Controller] Empty with Flag
@@ -157,6 +158,7 @@ void draw_bg(void)
 			break;
 	}
 
+
 	ppu_on_all(); // turn on screen
 }
 
@@ -225,6 +227,7 @@ void sprite_collision(void)
 	// 	init_mode_level_end();
 	//
 	// }
+	
 }
 
 void bg_collision()
@@ -350,6 +353,40 @@ void init_mode_title(void)
 
 void title_cutscene(void)
 {
+	oam_clear();
+	//tounge and tail wag continuously
+	
+	++frame_count3;
+	++frame_count4;
+	if (frame_count3 <= 20)
+	{
+		oam_meta_spr(48, 96, tonguewag0_data);
+	} else if (frame_count3 <= 40){
+		oam_meta_spr(48, 96, tonguewag1_data);
+	} else if (frame_count3 <= 60){
+		oam_meta_spr(48, 96, tonguewag2_data);
+	} else {
+		oam_meta_spr(48, 96, tonguewag1_data);
+	}
+
+	if(frame_count4 >= 200 && frame_count4 < 210){
+		oam_meta_spr(192, 96, tailwag0_data);
+	} else if (frame_count4 < 220){
+		oam_meta_spr(192, 96, tailwag1_data);
+	} else if (frame_count4 < 230){
+		oam_meta_spr(192, 96, tailwag2_data);
+	} else if (frame_count4 < 240){
+		oam_meta_spr(192, 96, tailwag1_data);
+	} else if (frame_count4 < 250){
+		oam_meta_spr(192, 96, tailwag0_data);
+	} else {
+		oam_meta_spr(192, 96, tailwag1_data);
+	}
+
+
+
+
+
 	// perry comes out stage left, walks right, looks back, then runs off stage right
 
 	if (frame_count > 254 && frame_count2 > 1 || BoxGuy1.X > 248)
@@ -400,7 +437,7 @@ void title_cutscene(void)
 		BoxGuy1.X += 2;
 	}
 
-	oam_clear();
+	
 	draw_player_sprite();
 }
 
