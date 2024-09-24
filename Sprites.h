@@ -371,21 +371,33 @@ const unsigned char tonguewag2_data[]={
 
 const unsigned char eyewag0_data[]={
 
-	  0,  0,0x23,1,
-	  8,  0,0x23,1,
+	  0,  0,0x20,0,
+	  8,  0,0x20,0,
 	0x80
 
 };
 
 const unsigned char eyewag1_data[]={
 
-	  0,  0,0x22,1,
-	  8,  0,0x22,1,
+	  0,  0,0x23,1,
+	  8,  0,0x23,1,
+	  0,  0,0x20,0,
+	  8,  0,0x20,0,
 	0x80
 
 };
 
 const unsigned char eyewag2_data[]={
+
+	  0,  0,0x22,1,
+	  8,  0,0x22,1,
+	  0,  0,0x20,0,
+	  8,  0,0x20,0,
+	0x80
+
+};
+
+const unsigned char eyewag3_data[]={
 
 	  0,  0,0x21,1,
 	  8,  0,0x21,1,

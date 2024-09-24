@@ -6,6 +6,8 @@
 #include "LIB/nesdoug.h"
 #include "Sprites.h" // holds our metasprite data
 #include "perrypuzzler.h"
+#include "MAPS/perrytiles.h"
+#include "MAPS/titletiles.h"
 
 /**
  * Work Needed
@@ -15,6 +17,7 @@
  * [] More Levels
  * [] add other controller reading logic
  * [] update title screen
+ * 
  */
   
 /**
@@ -28,6 +31,7 @@
  * 7. [Zapper] Gumshoe style shoot the side of him to move him to the goal? (or Controller on screen to shoot buttons at)
  * 8. [Controller]+[Zapper] Controller shoots, zapper moves on press down
  * 9. [Powerpad]+[Controller] Lights out?
+ * 9. [Powerpad]+[Controller] falling floor you gotta press the buttons
  * 10. [Powerpad]+[Zapper] Lights out-ish, but you have to shoot the lights by turning them on (maybe plus controller)
  * 11. [NESAdvantage/NESMax] use turbo buttons to move obstacles
  * 12. [NESAdvantage] use turbo buttons to move obstacles, but somehow different frequencies
@@ -70,6 +74,7 @@ void main(void)
 				level = 0; // debug this value
 				init_level();
 				game_mode = MODE_GAME;
+				pal_bg(palette_perrytileset_a);
 			}
 		}
 		else if (game_mode == MODE_GAME_OVER)
@@ -142,7 +147,8 @@ void draw_bg(void)
 	// pal_bg(palette_bg);
 	clear_vram_buffer();
 	set_data_pointer(Level_List[level]);
-	set_mt_pointer(metatiles);
+
+	set_mt_pointer(perrytiles);
 	for (y = 0;; y += 0x20)
 	{
 		for (x = 0;; x += 0x20)
@@ -319,6 +325,7 @@ void level_up(void)
 }
 
 #include "MAPS/levels/title.c"
+
 void init_mode_title(void)
 {
 	// draw the title screen
@@ -326,7 +333,10 @@ void init_mode_title(void)
 	// pal_bg(palette_bg);
 	clear_vram_buffer();
 	set_data_pointer(title_0);
-	set_mt_pointer(metatiles);
+	set_mt_pointer(titletiles);
+
+	pal_bg(title_bg_palette);
+
 	for (y = 0;; y += 0x20)
 	{
 		for (x = 0;; x += 0x20)
@@ -341,7 +351,6 @@ void init_mode_title(void)
 		if (y == 0xe0)
 			break;
 	}
-	multi_vram_buffer_horz("Brian And Alan Games", 20, NTADR_A(6, 24));
 	ppu_on_all();
 	game_mode = MODE_TITLE;
 	frame_count = 0;
@@ -354,22 +363,39 @@ void init_mode_title(void)
 void title_cutscene(void)
 {
 	oam_clear();
-	//tounge and tail wag continuously
+	oam_meta_spr(48, 72, eyewag0_data);
 	
+	//tounge and tail wag continuously
 	++frame_count3;
 	++frame_count4;
-	if (frame_count3 <= 20)
+	if (frame_count3 <= 10)
 	{
-		oam_meta_spr(48, 96, tonguewag0_data);
-	} else if (frame_count3 <= 40){
 		oam_meta_spr(48, 96, tonguewag1_data);
-	} else if (frame_count3 <= 60){
+	} else if (frame_count3 <= 20){
 		oam_meta_spr(48, 96, tonguewag2_data);
-	} else {
+	} else if (frame_count3 <= 30){
 		oam_meta_spr(48, 96, tonguewag1_data);
+	}  else if (frame_count3 <= 40){
+		oam_meta_spr(48, 96, tonguewag0_data);
+	} else if (frame_count3 <= 50){
+		oam_meta_spr(48, 96, tonguewag1_data);
+	}  else if (frame_count3 <= 60){
+		oam_meta_spr(48, 96, tonguewag2_data);
+	} else if (frame_count3 <= 70){
+		oam_meta_spr(48, 96, tonguewag1_data);
+	} else {
+		oam_meta_spr(48, 96, tonguewag0_data);
 	}
 
-	if(frame_count4 >= 200 && frame_count4 < 210){
+	if(frame_count4 >= 160 && frame_count4 < 170){
+		oam_meta_spr(192, 96, tailwag0_data);
+	} else if (frame_count4 < 180){
+		oam_meta_spr(192, 96, tailwag1_data);
+	} else if (frame_count4 < 190){
+		oam_meta_spr(192, 96, tailwag2_data);
+	} else if (frame_count4 < 200){
+		oam_meta_spr(192, 96, tailwag1_data);
+	} else if (frame_count4 < 210){
 		oam_meta_spr(192, 96, tailwag0_data);
 	} else if (frame_count4 < 220){
 		oam_meta_spr(192, 96, tailwag1_data);
