@@ -327,6 +327,30 @@ const unsigned char flagpole_data[]={
 
 };
 
+const unsigned char flagpolelong_data[]={
+
+	  3,  0,0x14,0,
+	  3,  8,0x14,0,
+	  3,- 8,0x14,0,
+	  3,-16,0x14,0,
+
+	  3, 16,0x14,0,
+	  3, 24,0x14,0,
+	  3,-24,0x14,0,
+	  3,-32,0x14,0,
+
+	  3,-40,0x14,0,
+	  3,-48,0x14,0,
+	  3, 32,0x14,0,
+	  3, 40,0x14,0,
+
+	  3,-56,0x14,0,
+	  3, 48,0x14,0,
+	  3,-64,0x14,0,
+	0x80
+
+};
+
 const unsigned char tailwag0_data[]={
 
 	  0,  0,0x15,1,
@@ -794,7 +818,7 @@ const unsigned char mower1_data[]={
 
 };
 
-const unsigned char Metasprite55_data[]={
+const unsigned char buddywalkeft0_data[]={
 
 	  2,  6,0x9d,1,
 	  0,  0,0x8e,0,
@@ -808,7 +832,7 @@ const unsigned char Metasprite55_data[]={
 
 };
 
-const unsigned char Metasprite55__1_data[]={
+const unsigned char buddywalkleft1_data[]={
 
 	  2,  6,0x9d,1,
 	  0,  0,0x8e,0,
@@ -818,6 +842,132 @@ const unsigned char Metasprite55__1_data[]={
 	  8,  8,0x9f,0,
 	  0, 16,0xac,0,
 	  8, 16,0xad,0,
+	0x80
+
+};
+
+const unsigned char buddywalkeft0__1_data[]={
+
+	  6,  6,0x9d,1|OAM_FLIP_H,
+	  8,  0,0x8e,0|OAM_FLIP_H,
+	  0,  0,0x8f,0|OAM_FLIP_H,
+	  8,  8,0x9e,0|OAM_FLIP_H,
+
+	  0,  8,0x9f,0|OAM_FLIP_H,
+	  8, 16,0xae,0|OAM_FLIP_H,
+	  0, 16,0xaf,0|OAM_FLIP_H,
+	0x80
+
+};
+
+const unsigned char buddywalkleft1__1_data[]={
+
+	  6,  6,0x9d,1|OAM_FLIP_H,
+	  8,  0,0x8e,0|OAM_FLIP_H,
+	  0,  0,0x8f,0|OAM_FLIP_H,
+	  8,  8,0x9e,0|OAM_FLIP_H,
+
+	  0,  8,0x9f,0|OAM_FLIP_H,
+	  8, 16,0xac,0|OAM_FLIP_H,
+	  0, 16,0xad,0|OAM_FLIP_H,
+	0x80
+
+};
+
+const unsigned char buddywalkdown0_data[]={
+
+	  4,  7,0x9c,1,
+	  0,  0,0x8a,0,
+	  8,  0,0x8b,0,
+	  0,  8,0x9a,0,
+
+	  8,  8,0x9b,0,
+	  0, 16,0xaa,0,
+	  8, 16,0xab,0,
+	0x80
+
+};
+
+const unsigned char buddywalkdown1_data[]={
+
+	  4,  7,0x9c,1,
+	  0,  0,0x8a,0,
+	  8,  0,0x8b,0,
+	  0,  8,0x9a,0,
+
+	  8,  8,0x9b,0,
+	  0, 16,0xa8,0,
+	  8, 16,0xa9,0,
+	0x80
+
+};
+
+const unsigned char unnamed_data[]={
+
+	  0,  0,0x88,0,
+	  8,  0,0x89,0,
+	  0,  8,0x98,0,
+	  8,  8,0x99,0,
+
+	  0, 16,0x78,0,
+	  8, 16,0x79,0,
+	0x80
+
+};
+
+const unsigned char unnamed__3_data[]={
+
+	  0,  0,0x88,0,
+	  8,  0,0x89,0,
+	  0,  8,0x98,0,
+	  8,  8,0x99,0,
+
+	  0, 16,0x7a,0,
+	  8, 16,0x7b,0,
+	0x80
+
+};
+
+const unsigned char lock_data[]={
+
+	  0,  0,0xb4,3,
+	  8,  0,0xb5,3,
+	  0,  8,0xc4,3,
+	  8,  8,0xc5,3,
+	0x80
+
+};
+
+const unsigned char pitopen0_data[]={
+
+	  4,  4,0x24,0,
+	0x80
+
+};
+
+const unsigned char pitopen1_data[]={
+
+	  4,  4,0x25,0,
+	0x80
+
+};
+
+const unsigned char pitopen2_data[]={
+
+	  1,  1,0x26,0,
+	  7,  1,0x26,0|OAM_FLIP_H,
+	  1,  7,0x26,0|OAM_FLIP_V,
+	  7,  7,0x26,0|OAM_FLIP_H|OAM_FLIP_V,
+	0x80
+
+};
+
+const unsigned char pitopen3_data[]={
+
+	  0,  0,0x26,0,
+	  8,  0,0x26,0|OAM_FLIP_H,
+	  0,  8,0x26,0|OAM_FLIP_V,
+	  8,  8,0x26,0|OAM_FLIP_H|OAM_FLIP_V,
 	0x80
 
 };

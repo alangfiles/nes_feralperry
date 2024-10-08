@@ -1,0 +1,81 @@
+const unsigned char * const level_text[] = {
+  "Easy Peasy",
+  "Not so simple",
+  "A bridge too far",
+  "90 Degrees",
+  "Art Critic"  //5
+  "Two Player Game",
+  "Get to the end",
+  "Sync and Spin",
+  "Push it to the limit",
+  "Fancy footwork", //10
+  "Lights out",
+  "Anarchy",
+  "Point and shoot",
+  "Work it out",
+  "Push it", //15
+  "Cheat the system",
+  "Leap of faith",
+};
+
+//cant dynamically calcualte this somehow
+const unsigned char level_text_length[] = {
+  10,
+  13,
+  16,
+  10,
+  10,  //5
+  15,
+  14,
+  13,
+  20,
+  13, //10
+  10,
+  7,
+  15,
+  11,
+  7, //15
+  16, 
+  13,
+};
+
+
+const unsigned char level_player_x[] = {
+  32,
+  32,
+  16,
+  16,
+  224,
+  11,
+  32,
+  112,
+  128,
+  96,
+  32,
+  128,
+  32,
+  16,
+  16,
+  16,
+  32,
+};
+
+const unsigned char level_player_y[] = {
+  64,
+  64,
+  48,
+  48,
+  64,
+  3,
+  48,
+  176,
+  80,
+  32,
+  176,
+  176,
+  80,
+  32,
+  128,
+  144,
+  80,
+};

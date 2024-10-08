@@ -6,7 +6,7 @@
 #include "LIB/nesdoug.h"
 #include "Sprites.h" // holds our metasprite data
 #include "perrypuzzler.h"
-#include "MAPS/perrytiles.h"
+#include "MAPS/perrytiles.h"  
 #include "MAPS/titletiles.h"
 
 /**
@@ -23,24 +23,37 @@
 /**
  * Level ideas:
  * 1. [Controller] Empty with Flag
- * 2. [Controller] Maze with Obstacles
- * 3. [Controller] 90 Degree shift
- * 4. [Controller] use 2nd controller only
- * 5. [Controller]+[Controller] use both controllers (one looks one moves, a la smashTV)
- * 6. [Controller]+[Zapper] block in middle to shoot
- * 7. [Zapper] Gumshoe style shoot the side of him to move him to the goal? (or Controller on screen to shoot buttons at)
- * 8. [Controller]+[Zapper] Controller shoots, zapper moves on press down
- * 9. [Powerpad]+[Controller] Lights out?
+ * 2. [Controller] Maze 
+ * 3. [Controller]+NES Screen wrap
+ * 4. [Controller] 90 Degree shift
+ * 5. [2ndController] use 2nd controller only
+ * 6. [Controller+Zapper] duck level
+ * 7. [Controller]+[Zapper] Controller looks, zapper moves on press down (shoot to move him)
+ * 8. [Powerpad] track and field, moves from power
  * 9. [Powerpad]+[Controller] falling floor you gotta press the buttons
- * 10. [Powerpad]+[Zapper] Lights out-ish, but you have to shoot the lights by turning them on (maybe plus controller)
- * 11. [NESAdvantage/NESMax] use turbo buttons to move obstacles
- * 12. [NESAdvantage] use turbo buttons to move obstacles, but somehow different frequencies
- * 13. [NESAdvantage] read every other command from other controller (aka flip 1/2player switch)
- * 14. [GameGenie]+[Controller] level shows code, input code to produce flag.
+ * 10. [Powerpad]+[Controller] Lights out + walk to goal
+ * 11. [Powerpad]+[Zapper]+[Controller] but you have to shoot the lights by turning them on (maybe plus controller)
+ * 12. [NES Advantage] Flag raising level
+ * 13. zen level without controller plugged in? (https://forums.nesdev.org/viewtopic.php?t=7411)
+ * 14. [Controller]+[NES] restart the system after writing a bunch of bytes to memory, check for them after.
+ * 15. [GameGenie]+[Controller] level shows code, input code to produce flag.
+ * 
+ * 
+ * microphone on famicom
+ * nes famicom adapter
+ * button pressing screen scrolling with NES advantage
+ * * move house around instead of dog
+ * shoot a big NES controller
+ * 15. Controller+NES Scrolling?
  * 15. [Controller]+[NES] Sprite limit of 64 with some small 8px barrier to get through
  * 16. [Controller]+[NES] Buttons swap palette to hide sprite boxes (make them non-collidable)
  * 17. [Controller]+[NES] push boxes into a row to screw up sprite limit on a line
- * 18. [Controller]+[NES] restart the system after writing a bunch of bytes to memory, check for them after.
+ * 12. [NESAdvantage] use turbo buttons to move obstacles, but somehow different frequencies
+ * 13. [NESAdvantage] read every other command from other controller (aka flip 1/2player switch)
+ * 5. [Controller]+[Controller] use both controllers (one looks one moves, a la smashTV) ?
+ * 
+ * requires save
+ * * 14. [GameGenie]+[Controller] level shows code, input code to produce flag.
  */
 
 void main(void)
@@ -58,6 +71,7 @@ void main(void)
 
 	init_mode_title();
 
+
 	while (1)
 	{
 
@@ -70,11 +84,11 @@ void main(void)
 			title_cutscene();
 
 			if (pad1_new & PAD_START)
-			{
-				level = 0; // debug this value
-				init_level();
-				game_mode = MODE_GAME;
+			{  
+				level = 8; // debug this value
 				pal_bg(palette_perrytileset_a);
+				init_level();
+				game_mode = MODE_GAME;  
 			}
 		}
 		else if (game_mode == MODE_GAME_OVER)
@@ -248,7 +262,7 @@ void bg_collision()
 	temp_x = BoxGuy1.X; // left side
 	temp_y = BoxGuy1.Y; // top side
 
-	if (temp_y >= 0xf0)
+	if (temp_y >= 0xf0)  
 		return;
 	// y out of range
 
@@ -318,7 +332,7 @@ void init_mode_level_end(void)
 void level_up(void)
 {
 	++level;
-	if (level >= 4)
+	if (level >= 17)
 		level = 0;
 
 	init_level();
@@ -477,7 +491,12 @@ void init_level(void)
 	game_mode = MODE_GAME;
 	draw_bg();
 	multi_vram_buffer_horz("Level", 5, NTADR_A(3, 1));
-	one_vram_buffer(49 + level, NTADR_A(9, 1));
+	if(level < 9){
+		one_vram_buffer(49 + level, NTADR_A(9, 1));
+	} else {
+		one_vram_buffer(49, NTADR_A(9, 1)); //1
+		one_vram_buffer(39 + level, NTADR_A(10, 1)); //level-10
+	}
 	multi_vram_buffer_horz(level_text[level], level_text_length[level], NTADR_A(3, 2));
 	set_direction();
 	ppu_on_all();
