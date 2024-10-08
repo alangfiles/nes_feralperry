@@ -109,12 +109,13 @@ struct BoxGuy BoxGuy1 = {64,80,13,14, LEFT};
 #include "MAPS/levels/level16.c"
 #include "MAPS/levels/level17.c"
 
+#include "MAPS/levels/bigperry.c"
 
 const unsigned char * const Level_List[] = {
 	level1_0, level2_0, level3_0, level4_0, level5_0, 
 	level6_0, level7_0, level8_0, level9_0, level10_0, 
 	level11_0, level12_0, level13_0, level14_0, level15_0, 
-	level16_0, level17_0
+	level16_0, level17_0, bigperry_0
 	};
 
 	const unsigned char * const level_text[] = {
@@ -122,7 +123,7 @@ const unsigned char * const Level_List[] = {
   "Not so simple",
   "A bridge too far",
   "90 Degrees",
-  "Art Critic"  //5
+  "Art Critic",  //5
   "Two Player Game",
   "Get to the end",
   "Sync and Spin",

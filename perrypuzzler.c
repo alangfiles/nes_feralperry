@@ -332,39 +332,13 @@ void init_mode_level_end(void)
 void level_up(void)
 {
 	++level;
-	if (level >= 17)
-		init_game_over();
-
-	init_level();
-}
-
-#include "MAPS/levels/bigperry.c"
-void init_game_over(void){
-	// draw the title screen
-	ppu_off();
-	// pal_bg(palette_bg);
-	clear_vram_buffer();
-	set_data_pointer(bigperry_0);
-	// set_mt_pointer(titletiles);
-
-	// pal_bg(title_bg_palette);
-
-	for (y = 0;; y += 0x20)
-	{
-		for (x = 0;; x += 0x20)
-		{
-			address = get_ppu_addr(0, x, y);
-			index = (y & 0xf0) + (x >> 4);
-			buffer_4_mt(address, index); // ppu_address, index to the data
-			flush_vram_update2();
-			if (x == 0xe0)
-				break;
-		}
-		if (y == 0xe0)
-			break;
+	if (level >= 17){
+		init_level();
+		game_mode=MODE_GAME_OVER;
+		level = 0;
+	} else {
+		init_level();
 	}
-	ppu_on_all();
-	game_mode = MODE_GAME_OVER;
 }
 
 #include "MAPS/levels/title.c"
@@ -519,14 +493,16 @@ void init_level(void)
 
 	game_mode = MODE_GAME;
 	draw_bg();
-	multi_vram_buffer_horz("Level", 5, NTADR_A(3, 1));
-	if(level < 9){
-		one_vram_buffer(49 + level, NTADR_A(9, 1));
-	} else {
-		one_vram_buffer(49, NTADR_A(9, 1)); //1
-		one_vram_buffer(39 + level, NTADR_A(10, 1)); //level-10
+	if(level < 17){
+		multi_vram_buffer_horz("Level", 5, NTADR_A(3, 1));
+		if(level < 9){
+			one_vram_buffer(49 + level, NTADR_A(9, 1));
+		} else {
+			one_vram_buffer(49, NTADR_A(9, 1)); //1
+			one_vram_buffer(39 + level, NTADR_A(10, 1)); //level-10
+		}
+		multi_vram_buffer_horz(level_text[level], level_text_length[level], NTADR_A(3, 2));
 	}
-	multi_vram_buffer_horz(level_text[level], level_text_length[level], NTADR_A(3, 2));
 	set_direction();
 	ppu_on_all();
 	pal_fade_to(0, 4);
