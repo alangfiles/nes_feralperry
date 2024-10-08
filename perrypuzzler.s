@@ -6492,7 +6492,7 @@ _palette_perrytileset_a:
 	.byte	$1A
 	.byte	$30
 	.byte	$0F
-	.byte	$15
+	.byte	$00
 	.byte	$1A
 	.byte	$21
 	.byte	$11
