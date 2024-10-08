@@ -84,8 +84,8 @@ void main(void)
 			title_cutscene();
 
 			if (pad1_new & PAD_START)
-			{  
-				level = 8; // debug this value
+			{   
+				level = 0; // debug this value
 				pal_bg(palette_perrytileset_a);
 				init_level();
 				game_mode = MODE_GAME;  
@@ -333,9 +333,38 @@ void level_up(void)
 {
 	++level;
 	if (level >= 17)
-		level = 0;
+		init_game_over();
 
 	init_level();
+}
+
+#include "MAPS/levels/bigperry.c"
+void init_game_over(void){
+	// draw the title screen
+	ppu_off();
+	// pal_bg(palette_bg);
+	clear_vram_buffer();
+	set_data_pointer(bigperry_0);
+	// set_mt_pointer(titletiles);
+
+	// pal_bg(title_bg_palette);
+
+	for (y = 0;; y += 0x20)
+	{
+		for (x = 0;; x += 0x20)
+		{
+			address = get_ppu_addr(0, x, y);
+			index = (y & 0xf0) + (x >> 4);
+			buffer_4_mt(address, index); // ppu_address, index to the data
+			flush_vram_update2();
+			if (x == 0xe0)
+				break;
+		}
+		if (y == 0xe0)
+			break;
+	}
+	ppu_on_all();
+	game_mode = MODE_GAME_OVER;
 }
 
 #include "MAPS/levels/title.c"

@@ -185,7 +185,7 @@ const unsigned char level_player_y[] = {
   48,
   48,
   64,
-  3,
+  32,
   48,
   176,
   80,
@@ -241,3 +241,4 @@ void draw_player_sprite(void);
 void init_mode_title(void);
 void title_cutscene(void);
 void init_mode_level_end(void);
+void init_game_over(void);
