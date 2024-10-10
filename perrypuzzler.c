@@ -85,7 +85,8 @@ void main(void)
 
 			if (pad1_new & PAD_START)
 			{   
-				level = 0; // debug this value
+				duck_exists = 1;
+				level = 5; // debug this value
 				pal_bg(palette_perrytileset_a);
 				init_level();
 				game_mode = MODE_GAME;  
@@ -117,7 +118,7 @@ void main(void)
 		{
 			ppu_wait_nmi();
 
-			if (level == 3)
+			if (level == GIMMICK_TWO_PLAYER)
 			{
 				pad1 = pad_poll(1);				 // read the first controller
 				pad1_new = get_pad_new(1); // newly pressed button. do pad_poll first
@@ -186,6 +187,9 @@ void draw_sprites(void)
 {
 	// clear all sprites from sprite buffer
 	oam_clear();
+	if(level == GIMMICK_DUCK_HUNT && duck_exists){
+		oam_meta_spr(112, 136, Duck_data);
+	}
 
 	// draw 1 metasprite
 	draw_player_sprite();
@@ -233,6 +237,7 @@ void movement(void)
 	}
 
 	bg_collision();
+	sprite_collision();
 	if (collision_D)
 		BoxGuy1.Y -= 1;
 	if (collision_U)
@@ -241,13 +246,16 @@ void movement(void)
 
 void sprite_collision(void)
 {
-	// if (BoxGuy1.X >= level_goal_x[level]-3 && BoxGuy1.X <= level_goal_x[level]+3
-	// && BoxGuy1.Y >= level_goal_y[level]-3 && BoxGuy1.Y <= level_goal_y[level]+3)
-	// {
-	// 	init_mode_level_end();
-	//
-	// }
-	
+	// set the first Generic to the players attributes
+	if (level == GIMMICK_DUCK_HUNT && duck_exists)
+	{
+		if(BoxGuy1.X >= 112 && BoxGuy1.X <= 144 
+		&& BoxGuy1.Y >= 128 && BoxGuy1.Y <= 176)
+		{
+			++collision_U;
+		}
+		
+	}
 }
 
 void bg_collision()
@@ -332,7 +340,7 @@ void init_mode_level_end(void)
 void level_up(void)
 {
 	++level;
-	if (level >= 17){
+	if (level >= LAST_LEVEL){
 		init_level();
 		game_mode=MODE_GAME_OVER;
 		level = 0;
@@ -493,16 +501,17 @@ void init_level(void)
 
 	game_mode = MODE_GAME;
 	draw_bg();
-	if(level < 17){
-		multi_vram_buffer_horz("Level", 5, NTADR_A(3, 1));
-		if(level < 9){
-			one_vram_buffer(49 + level, NTADR_A(9, 1));
-		} else {
-			one_vram_buffer(49, NTADR_A(9, 1)); //1
-			one_vram_buffer(39 + level, NTADR_A(10, 1)); //level-10
-		}
-		multi_vram_buffer_horz(level_text[level], level_text_length[level], NTADR_A(3, 2));
-	}
+	// debug, don't draw hints for now
+	// if(level < LAST_LEVEL){
+	// 	multi_vram_buffer_horz("Level", 5, NTADR_A(3, 1));
+	// 	if(level < 9){
+	// 		one_vram_buffer(49 + level, NTADR_A(9, 1));
+	// 	} else {
+	// 		one_vram_buffer(49, NTADR_A(9, 1)); //1
+	// 		one_vram_buffer(39 + level, NTADR_A(10, 1)); //level-10
+	// 	}
+	// 	multi_vram_buffer_horz(level_text[level], level_text_length[level], NTADR_A(3, 2));
+	// }
 	set_direction();
 	ppu_on_all();
 	pal_fade_to(0, 4);
@@ -515,7 +524,7 @@ void set_direction(void)
 	local_left = PAD_LEFT;
 	local_right = PAD_RIGHT;
 
-	if (level == 2)
+	if (level == GIMMICK_NINETY_DEGREE) // gimmick level
 	{
 		local_up = PAD_LEFT;
 		local_down = PAD_RIGHT;
