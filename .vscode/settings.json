@@ -1,6 +1,7 @@
 {
   "files.associations": {
     "perrypuzzler.h": "c",
-    "perrytiles.h": "c"
+    "perrytiles.h": "c",
+    "nesdoug.h": "c"
   }
 }

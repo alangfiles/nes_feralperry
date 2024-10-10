@@ -230,6 +230,8 @@ const unsigned char Duck_data[]={
 
 };
 
+
+
 const unsigned char switchleft_data[]={
 
 	  0,  0,0xc0,0,
@@ -968,6 +970,34 @@ const unsigned char pitopen3_data[]={
 	  8,  0,0x26,0|OAM_FLIP_H,
 	  0,  8,0x26,0|OAM_FLIP_V,
 	  8,  8,0x26,0|OAM_FLIP_H|OAM_FLIP_V,
+	0x80
+
+};
+
+const unsigned char White_duck_data[]={
+
+	  8,  0,0x03,0,
+	 16,  0,0x03,0,
+	  8,  8,0x03,0,
+	 16,  8,0x03,0,
+
+	 24,  8,0x03,0,
+	 24, 16,0x03,0,
+	 16, 16,0x03,0,
+	  8, 16,0x03,0,
+
+	  0, 16,0x03,0,
+	  0,  8,0x03,0,
+	  0, 24,0x03,0,
+	  8, 24,0x03,0,
+
+	 16, 24,0x03,0,
+	 24, 24,0x03,0,
+	 24, 32,0x03,0,
+	 16, 32,0x03,0,
+
+	  8, 32,0x03,0,
+	  0, 32,0x03,0,
 	0x80
 
 };

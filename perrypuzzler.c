@@ -3,6 +3,7 @@
  */
 
 #include "LIB/neslib.h"
+#include "LIB/zaplib.h"
 #include "LIB/nesdoug.h"
 #include "Sprites.h" // holds our metasprite data
 #include "perrypuzzler.h"
@@ -128,6 +129,40 @@ void main(void)
 				pad1 = pad_poll(0);				 // read the first controller
 				pad1_new = get_pad_new(0); // newly pressed button. do pad_poll first
 			}
+
+			if(level == GIMMICK_DUCK_HUNT)
+			{
+					zapper_ready = pad2_zapper ^ 1; // XOR last frame, make sure not held down still
+					// is trigger pulled?
+					pad2_zapper = zap_shoot(1); // controller slot 2
+					if ((pad2_zapper) && (zapper_ready))
+					{
+						// trigger pulled, play bang sound
+						// sfx_play(0, 0);
+						// bg off, project white boxes
+						oam_clear();
+						draw_shootable_box();			// redraw the star as a box
+						ppu_mask(0x16); // BG off, won't happen till NEXT frame
+
+						ppu_wait_nmi(); // wait till the top of the next frame
+						// this frame will display no BG and a white box
+						
+						draw_bg();
+						oam_clear();		// clear the NEXT frame
+						ppu_mask(0x1e); // bg on, won't happen till NEXT frame
+
+						hit_detected = zap_read(1); // look for light in zapper, port 2
+
+						if (hit_detected)
+						{
+							//play a sound when duck dies? (dog laughing?)
+							// sfx_play(0, 0);
+							duck_exists = 0;
+						}
+						// if hit failed, it should have already ran into the next nmi
+					}
+			}
+
 			movement();
 			draw_sprites();
 		}
@@ -151,6 +186,13 @@ void main(void)
 	}
 }
 
+void draw_shootable_box(void)
+{
+	if(duck_exists){
+		oam_meta_spr(112, 136, White_duck_data);
+	}
+}
+
 void draw_bg(void)
 {
 	ppu_off(); // screen off
@@ -163,9 +205,9 @@ void draw_bg(void)
 	clear_vram_buffer();
 	set_data_pointer(Level_List[level]);
 
-	set_mt_pointer(perrytiles);
+	set_mt_pointer(perrytiles);  
 	for (y = 0;; y += 0x20)
-	{
+	{  
 		for (x = 0;; x += 0x20)
 		{
 			address = get_ppu_addr(0, x, y);

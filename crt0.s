@@ -255,6 +255,7 @@ detectNTSC:
 	jmp _main			;no parameters
 
 	.include "LIB/neslib.s"
+	.include "LIB/zaplib.s"
 	.include "LIB/nesdoug.s"
 	.include "MUSIC/famitone2.s"
 	
