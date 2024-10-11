@@ -19,6 +19,7 @@ enum
 unsigned char pad2_zapper;
 unsigned char zapper_ready; //wait till it's 0
 unsigned char hit_detected;
+unsigned char nametable_to_use;
 unsigned char pad1;
 unsigned char pad1_new;
 unsigned char pad2;
@@ -48,6 +49,16 @@ unsigned char frame_count2;
 unsigned char frame_count3;
 unsigned char frame_count4;
 unsigned char duck_exists;
+unsigned int scroll_x;
+
+unsigned char flag_a_pos;
+unsigned char flag_b_pos;
+unsigned char flag_a;
+unsigned char flag_b;
+unsigned char turbo_a_rate;
+unsigned char turbo_b_rate;
+unsigned char last_turbo_a_rate;
+unsigned char last_turbo_b_rate;
 
 unsigned char local_left;
 unsigned char local_right;
@@ -94,7 +105,7 @@ struct BoxGuy {
 };
 
 
-struct BoxGuy BoxGuy1 = {64,80,13,14, LEFT};
+struct BoxGuy BoxGuy1 = {64,80,12,12, LEFT};
 
 
 
@@ -130,6 +141,8 @@ struct BoxGuy BoxGuy1 = {64,80,13,14, LEFT};
 #define GIMMICK_DUCK_HUNT 5
 #define GIMMICK_NINETY_DEGREE 4
 #define GIMMICK_SCREEN_SCROLL 6
+#define GIMMICK_TURBO_FLAGS 7
+#define GIMMICK_UNPLUG_CONTROLLER 8
 
 #define LAST_LEVEL 17
 
@@ -160,6 +173,7 @@ const unsigned char * const Level_List[] = {
 	level5_0, level7_0, level8_0, 
   // level9_0, level10_0, 
 	// level11_0, level12_0, level13_0, level14_0, level15_0, 
+  level12_0,
 	// level16_0, level17_0, 
   bigperry_0
 	};

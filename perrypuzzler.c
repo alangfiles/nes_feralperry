@@ -7,7 +7,7 @@
 #include "LIB/nesdoug.h"
 #include "Sprites.h" // holds our metasprite data
 #include "perrypuzzler.h"
-#include "MAPS/perrytiles.h"  
+#include "MAPS/perrytiles.h"
 #include "MAPS/titletiles.h"
 
 /**
@@ -18,13 +18,13 @@
  * [] More Levels
  * [] add other controller reading logic
  * [] update title screen
- * 
+ *
  */
-  
+
 /**
  * Level ideas:
  * 1. [Controller] Empty with Flag
- * 2. [Controller] Maze 
+ * 2. [Controller] Maze
  * 3. [Controller]+NES Screen wrap
  * 4. [Controller] 90 Degree shift
  * 5. [2ndController] use 2nd controller only
@@ -38,8 +38,8 @@
  * 13. zen level without controller plugged in? (https://forums.nesdev.org/viewtopic.php?t=7411)
  * 14. [Controller]+[NES] restart the system after writing a bunch of bytes to memory, check for them after.
  * 15. [GameGenie]+[Controller] level shows code, input code to produce flag.
- * 
- * 
+ *
+ *
  * microphone on famicom
  * nes famicom adapter
  * button pressing screen scrolling with NES advantage
@@ -52,7 +52,7 @@
  * 12. [NESAdvantage] use turbo buttons to move obstacles, but somehow different frequencies
  * 13. [NESAdvantage] read every other command from other controller (aka flip 1/2player switch)
  * 5. [Controller]+[Controller] use both controllers (one looks one moves, a la smashTV) ?
- * 
+ *
  * requires save
  * * 14. [GameGenie]+[Controller] level shows code, input code to produce flag.
  */
@@ -72,7 +72,6 @@ void main(void)
 
 	init_mode_title();
 
-
 	while (1)
 	{
 
@@ -85,12 +84,14 @@ void main(void)
 			title_cutscene();
 
 			if (pad1_new & PAD_START)
-			{   
+			{
+				// init values
 				duck_exists = 1;
-				level = 5; // debug this value
+				scroll_x = 0;
+				level = GIMMICK_UNPLUG_CONTROLLER; // debug this value
 				pal_bg(palette_perrytileset_a);
 				init_level();
-				game_mode = MODE_GAME;  
+				game_mode = MODE_GAME;
 			}
 		}
 		else if (game_mode == MODE_GAME_OVER)
@@ -130,37 +131,156 @@ void main(void)
 				pad1_new = get_pad_new(0); // newly pressed button. do pad_poll first
 			}
 
-			if(level == GIMMICK_DUCK_HUNT)
+			if (level == GIMMICK_DUCK_HUNT)
 			{
-					zapper_ready = pad2_zapper ^ 1; // XOR last frame, make sure not held down still
-					// is trigger pulled?
-					pad2_zapper = zap_shoot(1); // controller slot 2
-					if ((pad2_zapper) && (zapper_ready))
+				zapper_ready = pad2_zapper ^ 1; // XOR last frame, make sure not held down still
+				// is trigger pulled?
+				pad2_zapper = zap_shoot(1); // controller slot 2
+				if ((pad2_zapper) && (zapper_ready))
+				{
+					// trigger pulled, play bang sound
+					// sfx_play(0, 0);
+					// bg off, project white boxes
+					oam_clear();
+					draw_shootable_box(); // redraw the star as a box
+					ppu_mask(0x16);				// BG off, won't happen till NEXT frame
+
+					ppu_wait_nmi(); // wait till the top of the next frame
+					// this frame will display no BG and a white box
+
+					draw_bg();
+					oam_clear();		// clear the NEXT frame
+					ppu_mask(0x1e); // bg on, won't happen till NEXT frame
+
+					hit_detected = zap_read(1); // look for light in zapper, port 2
+
+					if (hit_detected)
 					{
-						// trigger pulled, play bang sound
-						// sfx_play(0, 0);
-						// bg off, project white boxes
-						oam_clear();
-						draw_shootable_box();			// redraw the star as a box
-						ppu_mask(0x16); // BG off, won't happen till NEXT frame
-
-						ppu_wait_nmi(); // wait till the top of the next frame
-						// this frame will display no BG and a white box
-						
-						draw_bg();
-						oam_clear();		// clear the NEXT frame
-						ppu_mask(0x1e); // bg on, won't happen till NEXT frame
-
-						hit_detected = zap_read(1); // look for light in zapper, port 2
-
-						if (hit_detected)
-						{
-							//play a sound when duck dies? (dog laughing?)
-							// sfx_play(0, 0);
-							duck_exists = 0;
-						}
-						// if hit failed, it should have already ran into the next nmi
+						// play a sound when duck dies? (dog laughing?)
+						//  sfx_play(0, 0);
+						duck_exists = 0;
 					}
+					// if hit failed, it should have already ran into the next nmi
+				}
+			}
+
+			if (level == GIMMICK_SCREEN_SCROLL)
+			{
+				++frame_count;
+				if (frame_count == 20)
+				{
+					if (scroll_x > 0)
+					{
+						--scroll_x;
+					}
+					frame_count = 0;
+				}
+				set_scroll_x(scroll_x);
+
+				if (pad1_new & PAD_A || pad1_new & PAD_B)
+				{
+					if (scroll_x < 256)
+					{
+						scroll_x += 1;
+					}
+				}
+			}
+
+			if (level == GIMMICK_TURBO_FLAGS)
+			{
+				++frame_count;
+
+				if (frame_count >= 60)
+				{
+					frame_count = 0;
+					last_turbo_a_rate = turbo_a_rate;
+					last_turbo_b_rate = turbo_b_rate;
+					turbo_a_rate = 0;
+					turbo_b_rate = 0;
+				}
+				// first flag goes down at 1 pixel every 10 frames
+				if (frame_count % 10 == 0)
+				{
+					if (last_turbo_a_rate > 0)
+					{
+						if (flag_a > 0)
+						{
+							--flag_a;
+						}
+					}
+					else
+					{ // button hasn't been pressed in 60 second, fast drop
+						if (flag_a > 4)
+						{
+							flag_a -= 4;
+						}
+						else
+						{
+							flag_a = 0;
+						}
+					}
+				}
+
+				// second flag goes down at 1 pixel every 25 frames
+				if (frame_count == 25 || frame_count == 50)
+				{
+					if (last_turbo_b_rate > 0)
+					{
+						if (flag_b > 0)
+						{
+							--flag_b;
+						}
+					}
+					else
+					{ // button hasn't been pressed in 60 second, fast drop
+						if (flag_b > 4)
+						{
+							flag_b -= 4;
+						}
+						else
+						{
+							flag_b = 0;
+						}
+					}
+				}
+
+				if (pad1_new & PAD_A)
+				{
+					++turbo_a_rate;
+					if (flag_a < 110)
+					{
+						++flag_a;
+					}
+				}
+
+				if (pad1_new & PAD_B)
+				{
+					++turbo_b_rate;
+					if (flag_b < 110)
+					{
+						++flag_b;
+					}
+				}
+			}
+
+			if(level==GIMMICK_UNPLUG_CONTROLLER){
+				one_vram_buffer(pad1&0b00000001 ? 49 : 48, NTADR_A(9, 1));
+				one_vram_buffer(pad1&0b00000010 ? 49 : 48, NTADR_A(10, 1));
+				one_vram_buffer(pad1&0b00000100 ? 49 : 48, NTADR_A(11, 1));
+				one_vram_buffer(pad1&0b00001000 ? 49 : 48, NTADR_A(12, 1));
+				one_vram_buffer(pad1&0b00010000 ? 49 : 48, NTADR_A(13, 1));
+				one_vram_buffer(pad1&0b00100000 ? 49 : 48, NTADR_A(14, 1));
+				one_vram_buffer(pad1&0b01000000 ? 49 : 48, NTADR_A(15, 1));
+				one_vram_buffer(pad1&0b10000000 ? 49 : 48, NTADR_A(16, 1));	
+
+				one_vram_buffer(pad1_new&0b00000001 ? 49 : 48, NTADR_A(9, 2));
+				one_vram_buffer(pad1_new&0b00000010 ? 49 : 48, NTADR_A(10, 2));
+				one_vram_buffer(pad1_new&0b00000100 ? 49 : 48, NTADR_A(11, 2));
+				one_vram_buffer(pad1_new&0b00001000 ? 49 : 48, NTADR_A(12, 2));
+				one_vram_buffer(pad1_new&0b00010000 ? 49 : 48, NTADR_A(13, 2));
+				one_vram_buffer(pad1_new&0b00100000 ? 49 : 48, NTADR_A(14, 2));
+				one_vram_buffer(pad1_new&0b01000000 ? 49 : 48, NTADR_A(15, 2));
+				one_vram_buffer(pad1_new&0b10000000 ? 49 : 48, NTADR_A(16, 2));	
 			}
 
 			movement();
@@ -188,7 +308,8 @@ void main(void)
 
 void draw_shootable_box(void)
 {
-	if(duck_exists){
+	if (duck_exists)
+	{
 		oam_meta_spr(112, 136, White_duck_data);
 	}
 }
@@ -205,12 +326,45 @@ void draw_bg(void)
 	clear_vram_buffer();
 	set_data_pointer(Level_List[level]);
 
-	set_mt_pointer(perrytiles);  
+	set_mt_pointer(perrytiles);
+
+	if (level == GIMMICK_SCREEN_SCROLL)
+	{
+		nametable_to_use = 1;
+		// clear first nametable
+		for (y = 0;; y += 0x20)
+		{
+			for (x = 0;; x += 0x20)
+			{
+				address = get_ppu_addr(0, x, y);
+				buffer_4_mt(address, 0); // ppu_address, index to the data
+				flush_vram_update2();
+				if (x == 0xe0)
+					break;
+			}
+			if (y == 0xe0)
+				break;
+		}
+		// multi_vram_buffer_horz("Level", 5, NTADR_A(3, 1));
+		// if(level < 9){
+		// 	one_vram_buffer(49 + level, NTADR_A(9, 1));
+		// } else {
+		// 	one_vram_buffer(49, NTADR_A(9, 1)); //1
+		// 	one_vram_buffer(39 + level, NTADR_A(10, 1)); //level-10
+		// }
+		multi_vram_buffer_horz("PERRY PUZZLE 2': TURBO", 22, NTADR_A(3, 2));
+	}
+	else
+	{
+		scroll_x = 0;
+		set_scroll_x(scroll_x);
+		nametable_to_use = 0;
+	}
 	for (y = 0;; y += 0x20)
-	{  
+	{
 		for (x = 0;; x += 0x20)
 		{
-			address = get_ppu_addr(0, x, y);
+			address = get_ppu_addr(nametable_to_use, x, y);
 			index = (y & 0xf0) + (x >> 4);
 			buffer_4_mt(address, index); // ppu_address, index to the data
 			flush_vram_update2();
@@ -221,6 +375,20 @@ void draw_bg(void)
 			break;
 	}
 
+	for (y = 0;; y += 0x20)
+	{
+		for (x = 0;; x += 0x20)
+		{
+			address = get_ppu_addr(nametable_to_use, x, y);
+			index = (y & 0xf0) + (x >> 4);
+			buffer_4_mt(address, index); // ppu_address, index to the data
+			flush_vram_update2();
+			if (x == 0xe0)
+				break;
+		}
+		if (y == 0xe0)
+			break;
+	}
 
 	ppu_on_all(); // turn on screen
 }
@@ -229,8 +397,22 @@ void draw_sprites(void)
 {
 	// clear all sprites from sprite buffer
 	oam_clear();
-	if(level == GIMMICK_DUCK_HUNT && duck_exists){
+	if (level == GIMMICK_DUCK_HUNT && duck_exists)
+	{
 		oam_meta_spr(112, 136, Duck_data);
+	}
+
+	if (level == GIMMICK_TURBO_FLAGS)
+	{
+
+		flag_a_pos = 160 - flag_a;
+		flag_b_pos = 176 - flag_b;
+
+		oam_meta_spr(53, flag_a_pos, perryflag0_data);	// flag_a
+		oam_meta_spr(197, flag_b_pos, perryflag0_data); // flag_b
+
+		oam_meta_spr(51, 112, flagpolelong_data);
+		oam_meta_spr(195, 128, flagpolelong_data);
 	}
 
 	// draw 1 metasprite
@@ -291,12 +473,10 @@ void sprite_collision(void)
 	// set the first Generic to the players attributes
 	if (level == GIMMICK_DUCK_HUNT && duck_exists)
 	{
-		if(BoxGuy1.X >= 112 && BoxGuy1.X <= 144 
-		&& BoxGuy1.Y >= 128 && BoxGuy1.Y <= 176)
+		if (BoxGuy1.X >= 112 && BoxGuy1.X <= 144 && BoxGuy1.Y >= 128 && BoxGuy1.Y <= 176)
 		{
 			++collision_U;
 		}
-		
 	}
 }
 
@@ -312,7 +492,7 @@ void bg_collision()
 	temp_x = BoxGuy1.X; // left side
 	temp_y = BoxGuy1.Y; // top side
 
-	if (temp_y >= 0xf0)  
+	if (temp_y >= 0xf0)
 		return;
 	// y out of range
 
@@ -382,11 +562,14 @@ void init_mode_level_end(void)
 void level_up(void)
 {
 	++level;
-	if (level >= LAST_LEVEL){
+	if (level >= LAST_LEVEL)
+	{
 		init_level();
-		game_mode=MODE_GAME_OVER;
+		game_mode = MODE_GAME_OVER;
 		level = 0;
-	} else {
+	}
+	else
+	{
 		init_level();
 	}
 }
@@ -431,54 +614,83 @@ void title_cutscene(void)
 {
 	oam_clear();
 	oam_meta_spr(48, 72, eyewag0_data);
-	
-	//tounge and tail wag continuously
+
+	// tounge and tail wag continuously
 	++frame_count3;
 	++frame_count4;
 	if (frame_count3 <= 10)
 	{
 		oam_meta_spr(48, 96, tonguewag1_data);
-	} else if (frame_count3 <= 20){
+	}
+	else if (frame_count3 <= 20)
+	{
 		oam_meta_spr(48, 96, tonguewag2_data);
-	} else if (frame_count3 <= 30){
+	}
+	else if (frame_count3 <= 30)
+	{
 		oam_meta_spr(48, 96, tonguewag1_data);
-	}  else if (frame_count3 <= 40){
+	}
+	else if (frame_count3 <= 40)
+	{
 		oam_meta_spr(48, 96, tonguewag0_data);
-	} else if (frame_count3 <= 50){
+	}
+	else if (frame_count3 <= 50)
+	{
 		oam_meta_spr(48, 96, tonguewag1_data);
-	}  else if (frame_count3 <= 60){
+	}
+	else if (frame_count3 <= 60)
+	{
 		oam_meta_spr(48, 96, tonguewag2_data);
-	} else if (frame_count3 <= 70){
+	}
+	else if (frame_count3 <= 70)
+	{
 		oam_meta_spr(48, 96, tonguewag1_data);
-	} else {
+	}
+	else
+	{
 		oam_meta_spr(48, 96, tonguewag0_data);
 	}
 
-	if(frame_count4 >= 160 && frame_count4 < 170){
+	if (frame_count4 >= 160 && frame_count4 < 170)
+	{
 		oam_meta_spr(192, 96, tailwag0_data);
-	} else if (frame_count4 < 180){
-		oam_meta_spr(192, 96, tailwag1_data);
-	} else if (frame_count4 < 190){
-		oam_meta_spr(192, 96, tailwag2_data);
-	} else if (frame_count4 < 200){
-		oam_meta_spr(192, 96, tailwag1_data);
-	} else if (frame_count4 < 210){
-		oam_meta_spr(192, 96, tailwag0_data);
-	} else if (frame_count4 < 220){
-		oam_meta_spr(192, 96, tailwag1_data);
-	} else if (frame_count4 < 230){
-		oam_meta_spr(192, 96, tailwag2_data);
-	} else if (frame_count4 < 240){
-		oam_meta_spr(192, 96, tailwag1_data);
-	} else if (frame_count4 < 250){
-		oam_meta_spr(192, 96, tailwag0_data);
-	} else {
+	}
+	else if (frame_count4 < 180)
+	{
 		oam_meta_spr(192, 96, tailwag1_data);
 	}
-
-
-
-
+	else if (frame_count4 < 190)
+	{
+		oam_meta_spr(192, 96, tailwag2_data);
+	}
+	else if (frame_count4 < 200)
+	{
+		oam_meta_spr(192, 96, tailwag1_data);
+	}
+	else if (frame_count4 < 210)
+	{
+		oam_meta_spr(192, 96, tailwag0_data);
+	}
+	else if (frame_count4 < 220)
+	{
+		oam_meta_spr(192, 96, tailwag1_data);
+	}
+	else if (frame_count4 < 230)
+	{
+		oam_meta_spr(192, 96, tailwag2_data);
+	}
+	else if (frame_count4 < 240)
+	{
+		oam_meta_spr(192, 96, tailwag1_data);
+	}
+	else if (frame_count4 < 250)
+	{
+		oam_meta_spr(192, 96, tailwag0_data);
+	}
+	else
+	{
+		oam_meta_spr(192, 96, tailwag1_data);
+	}
 
 	// perry comes out stage left, walks right, looks back, then runs off stage right
 
@@ -530,7 +742,6 @@ void title_cutscene(void)
 		BoxGuy1.X += 2;
 	}
 
-	
 	draw_player_sprite();
 }
 
