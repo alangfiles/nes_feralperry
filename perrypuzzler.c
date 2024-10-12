@@ -4,6 +4,7 @@
 
 #include "LIB/neslib.h"
 #include "LIB/zaplib.h"
+#include "LIB/padlib.h"
 #include "LIB/nesdoug.h"
 #include "Sprites.h" // holds our metasprite data
 #include "perrypuzzler.h"
@@ -264,6 +265,7 @@ void main(void)
 			}
 
 			if(level==GIMMICK_UNPLUG_CONTROLLER){
+				//todo remove this it won't work
 				one_vram_buffer(pad1&0b00000001 ? 49 : 48, NTADR_A(9, 1));
 				one_vram_buffer(pad1&0b00000010 ? 49 : 48, NTADR_A(10, 1));
 				one_vram_buffer(pad1&0b00000100 ? 49 : 48, NTADR_A(11, 1));
@@ -282,6 +284,15 @@ void main(void)
 				one_vram_buffer(pad1_new&0b01000000 ? 49 : 48, NTADR_A(15, 2));
 				one_vram_buffer(pad1_new&0b10000000 ? 49 : 48, NTADR_A(16, 2));	
 			}
+
+
+				powerpad_cur = read_powerpad(1);
+		process_powerpad(); // goes after the read
+							// transfers only new presses to powerpad_new
+							// powerpad_new isn't used here, but
+							// would be very useful for a game
+		
+
 
 			movement();
 			draw_sprites();
@@ -920,3 +931,12 @@ void draw_player_sprite(void)
 	}
 	oam_meta_spr(BoxGuy1.X, BoxGuy1.Y, pointer2);
 }
+
+
+// do after the read
+void process_powerpad(void){
+	
+	powerpad_new = (powerpad_cur^powerpad_old)&powerpad_cur;
+	
+	powerpad_old = powerpad_cur;
+}	

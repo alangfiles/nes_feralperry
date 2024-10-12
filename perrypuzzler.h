@@ -16,9 +16,17 @@ enum
 #pragma bss-name(push, "ZEROPAGE")
 
 // GLOBAL VARIABLES
+//zapper
 unsigned char pad2_zapper;
 unsigned char zapper_ready; //wait till it's 0
 unsigned char hit_detected;
+
+//powerpad
+unsigned int powerpad_cur;
+unsigned int powerpad_old; //don't use this
+unsigned int powerpad_new;
+
+
 unsigned char nametable_to_use;
 unsigned char pad1;
 unsigned char pad1_new;
@@ -310,3 +318,4 @@ void title_cutscene(void);
 void init_mode_level_end(void);
 void init_game_over(void);
 void draw_shootable_box(void);
+void process_powerpad(void);

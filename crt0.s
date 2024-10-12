@@ -256,6 +256,7 @@ detectNTSC:
 
 	.include "LIB/neslib.s"
 	.include "LIB/zaplib.s"
+	.include "LIB/padlib.s"
 	.include "LIB/nesdoug.s"
 	.include "MUSIC/famitone2.s"
 	
