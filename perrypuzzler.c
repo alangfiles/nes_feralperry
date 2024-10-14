@@ -124,12 +124,55 @@ void main(void)
 			if (level == GIMMICK_TWO_PLAYER)
 			{
 				pad1 = pad_poll(1);				 // read the first controller
-				pad1_new = get_pad_new(1); // newly pressed button. do pad_poll first
+				pad1 = get_pad_new(1); // newly pressed button. do pad_poll first
+			}
+			else if(level == GIMMICK_TRACK_AND_FIELD){
+				powerpad_cur = read_powerpad(0);
+				process_powerpad(); // goes after the read
+									// transfers only new presses to powerpad_new
+									// powerpad_new isn't used here, but
+									// would be very useful for a game
+
+				//2,3 face up
+				//5 face left
+				//8 face right
+				//10,11 face down
+				if(powerpad_new & POWERPAD_2){
+					pad1_new = PAD_UP;
+				} else if(powerpad_new & POWERPAD_3){
+					pad1_new = PAD_UP;
+				} else if(powerpad_new & POWERPAD_5){
+					pad1_new = PAD_LEFT;
+				} else if(powerpad_new & POWERPAD_8){
+					pad1_new = PAD_RIGHT;
+				} else if(powerpad_new & POWERPAD_10){
+					pad1_new = PAD_DOWN;
+				} else if(powerpad_new & POWERPAD_11){
+					pad1_new = PAD_DOWN;
+				}
+				//change where they're looking.
+				movement_user_direction();
+
+				if(powerpad_new & POWERPAD_6){
+					if(powerpad_old_button == POWERPAD_7){
+						movement_user_forward();
+					}
+					powerpad_old_button = POWERPAD_6;
+				} else if(powerpad_new & POWERPAD_7){
+					if(powerpad_old_button == POWERPAD_6){
+						movement_user_forward();
+					}
+					powerpad_old_button = POWERPAD_7;
+				}
+
+				//user needs to press 6 then 7 to move forward.
+				
+			
 			}
 			else
 			{
 				pad1 = pad_poll(0);				 // read the first controller
-				pad1_new = get_pad_new(0); // newly pressed button. do pad_poll first
+				pad1 = get_pad_new(0); // newly pressed button. do pad_poll first
 			}
 
 			if (level == GIMMICK_DUCK_HUNT)
@@ -265,15 +308,11 @@ void main(void)
 			}
 
 
-				powerpad_cur = read_powerpad(1);
-		process_powerpad(); // goes after the read
-							// transfers only new presses to powerpad_new
-							// powerpad_new isn't used here, but
-							// would be very useful for a game
-		
-
-
-			movement();
+			//this will expand for gumshoe
+			if(level != GIMMICK_TRACK_AND_FIELD){
+				movement();
+			}
+			
 			draw_sprites();
 		}
 		else if (game_mode == MODE_LEVEL_END)
@@ -403,19 +442,60 @@ void draw_sprites(void)
 	draw_player_sprite();
 }
 
+void movement_user_direction(void)
+{
+	//change the direction he's looking
+	if (pad1_new & local_left){
+		BoxGuy1.direction = LEFT;
+	}
+	else if (pad1_new & local_right){
+		BoxGuy1.direction = RIGHT;
+	} else if(pad1_new & local_up){
+		BoxGuy1.direction = UP;
+	} else if(pad1_new & local_down){
+		BoxGuy1.direction = DOWN;
+	}
+}
+
+#define USER_FORWARD 8
+void movement_user_forward(void){
+	// move based on direction.
+
+	if(BoxGuy1.direction == LEFT){
+		BoxGuy1.X -= USER_FORWARD;
+	} else if(BoxGuy1.direction == RIGHT){
+		BoxGuy1.X += USER_FORWARD;
+	} else if(BoxGuy1.direction == UP){
+		BoxGuy1.Y -= USER_FORWARD;
+	} else if(BoxGuy1.direction == DOWN){
+		BoxGuy1.Y += USER_FORWARD;
+	}
+	bg_collision();
+	if (collision_R)
+		BoxGuy1.X -= USER_FORWARD;
+	if (collision_L)
+		BoxGuy1.X += USER_FORWARD;
+	if (collision_D)
+		BoxGuy1.Y -= USER_FORWARD;
+	if (collision_U)
+		BoxGuy1.Y += USER_FORWARD;
+}
+
+	
+
 void movement(void)
 {
 
 	is_moving = 0;
 	has_moved = 0;
-	if (pad1 & local_left)
+	if (pad1_new & local_left)
 	{
 		is_moving = 1;
 		BoxGuy1.direction = LEFT;
 		BoxGuy1.X -= 1;
 		has_moved = 1;
 	}
-	else if (pad1 & local_right)
+	else if (pad1_new & local_right)
 	{
 		is_moving = 1;
 		BoxGuy1.direction = RIGHT;
@@ -429,14 +509,14 @@ void movement(void)
 	if (collision_L)
 		BoxGuy1.X += 1;
 
-	if (pad1 & local_up && has_moved == 0)
+	if (pad1_new & local_up && has_moved == 0)
 	{
 		BoxGuy1.direction = UP;
 		BoxGuy1.Y -= 1;
 		has_moved = 1;
 		is_moving = 1;
 	}
-	else if (pad1 & local_down && has_moved == 0)
+	else if (pad1_new & local_down && has_moved == 0)
 	{
 		BoxGuy1.direction = DOWN;
 		BoxGuy1.Y += 1;

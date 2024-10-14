@@ -25,9 +25,11 @@ unsigned char hit_detected;
 unsigned int powerpad_cur;
 unsigned int powerpad_old; //don't use this
 unsigned int powerpad_new;
+unsigned int powerpad_old_button;
 
 
 unsigned char nametable_to_use;
+unsigned char user_input_new;
 unsigned char pad1;
 unsigned char pad1_new;
 unsigned char pad2;
@@ -328,3 +330,5 @@ void init_mode_level_end(void);
 void init_game_over(void);
 void draw_shootable_box(void);
 void process_powerpad(void);
+void movement_user_direction(void);
+void movement_user_forward(void);
