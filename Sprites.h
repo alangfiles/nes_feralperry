@@ -991,6 +991,16 @@ const unsigned char redarrow_data[]={
 
 };
 
+const unsigned char White_perry_data[]={
+
+	  0,  0,0x03,0,
+	  8,  0,0x03,0,
+	  0,  8,0x03,0,
+	  8,  8,0x03,0,
+	0x80
+
+};
+
 const unsigned char White_duck_data[]={
 
 	  8,  0,0x03,0,

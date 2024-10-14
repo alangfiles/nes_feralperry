@@ -89,7 +89,7 @@ void main(void)
 				// init values
 				duck_exists = 1;
 				scroll_x = 0;
-				level = 0; // debug this value
+				level = GIMMICK_GUMSHOE; // debug this value
 				pal_bg(palette_perrytileset_a);
 				init_level();
 				game_mode = MODE_GAME;
@@ -124,7 +124,7 @@ void main(void)
 			if (level == GIMMICK_TWO_PLAYER)
 			{
 				pad1 = pad_poll(1);				 // read the first controller
-				pad1 = get_pad_new(1); // newly pressed button. do pad_poll first
+				pad1_new = get_pad_new(1); // newly pressed button. do pad_poll first
 			}
 			else if(level == GIMMICK_TRACK_AND_FIELD){
 				powerpad_cur = read_powerpad(0);
@@ -172,7 +172,7 @@ void main(void)
 			else
 			{
 				pad1 = pad_poll(0);				 // read the first controller
-				pad1 = get_pad_new(0); // newly pressed button. do pad_poll first
+				pad1_new = get_pad_new(0); // newly pressed button. do pad_poll first
 			}
 
 			if (level == GIMMICK_DUCK_HUNT)
@@ -208,6 +208,40 @@ void main(void)
 				}
 			}
 
+
+			if( level == GIMMICK_GUMSHOE){
+				//update player movement
+				movement_user_direction();
+
+				zapper_ready = pad2_zapper ^ 1; // XOR last frame, make sure not held down still
+				// is trigger pulled?
+				pad2_zapper = zap_shoot(1); // controller slot 2
+				if ((pad2_zapper) && (zapper_ready))
+				{
+					// trigger pulled, play bang sound
+					// sfx_play(0, 0);
+					// bg off, project white boxes
+					oam_clear();
+					draw_shootable_box(); // redraw the star as a box
+					ppu_mask(0x16);				// BG off, won't happen till NEXT frame
+
+					ppu_wait_nmi(); // wait till the top of the next frame
+					// this frame will display no BG and a white box
+
+					draw_bg();
+					oam_clear();		// clear the NEXT frame
+					ppu_mask(0x1e); // bg on, won't happen till NEXT frame
+
+					hit_detected = zap_read(1); // look for light in zapper, port 2
+
+					if (hit_detected)
+					{
+						amount_to_move = 16;
+						movement_user_forward();
+					}
+					// if hit failed, it should have already ran into the next nmi
+				}
+			}
 			if (level == GIMMICK_SCREEN_SCROLL)
 			{
 				++frame_count;
@@ -309,7 +343,7 @@ void main(void)
 
 
 			//this will expand for gumshoe
-			if(level != GIMMICK_TRACK_AND_FIELD){
+			if(level != GIMMICK_TRACK_AND_FIELD && level != GIMMICK_GUMSHOE){
 				movement();
 			}
 			
@@ -337,9 +371,12 @@ void main(void)
 
 void draw_shootable_box(void)
 {
-	if (duck_exists)
-	{
+	if(level == GIMMICK_DUCK_HUNT && duck_exists){
 		oam_meta_spr(112, 136, White_duck_data);
+	}
+	
+	if(level == GIMMICK_GUMSHOE){
+		oam_meta_spr(BoxGuy1.X, BoxGuy1.Y, White_perry_data);
 	}
 }
 
@@ -488,14 +525,14 @@ void movement(void)
 
 	is_moving = 0;
 	has_moved = 0;
-	if (pad1_new & local_left)
+	if (pad1 & local_left)
 	{
 		is_moving = 1;
 		BoxGuy1.direction = LEFT;
 		BoxGuy1.X -= 1;
 		has_moved = 1;
 	}
-	else if (pad1_new & local_right)
+	else if (pad1 & local_right)
 	{
 		is_moving = 1;
 		BoxGuy1.direction = RIGHT;
@@ -509,14 +546,14 @@ void movement(void)
 	if (collision_L)
 		BoxGuy1.X += 1;
 
-	if (pad1_new & local_up && has_moved == 0)
+	if (pad1 & local_up && has_moved == 0)
 	{
 		BoxGuy1.direction = UP;
 		BoxGuy1.Y -= 1;
 		has_moved = 1;
 		is_moving = 1;
 	}
-	else if (pad1_new & local_down && has_moved == 0)
+	else if (pad1 & local_down && has_moved == 0)
 	{
 		BoxGuy1.direction = DOWN;
 		BoxGuy1.Y += 1;

@@ -28,6 +28,7 @@ unsigned int powerpad_new;
 unsigned int powerpad_old_button;
 
 
+unsigned char amount_to_move;
 unsigned char nametable_to_use;
 unsigned char user_input_new;
 unsigned char pad1;
