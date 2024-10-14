@@ -230,8 +230,6 @@ const unsigned char Duck_data[]={
 
 };
 
-
-
 const unsigned char switchleft_data[]={
 
 	  0,  0,0xc0,0,
@@ -331,24 +329,25 @@ const unsigned char flagpole_data[]={
 
 const unsigned char flagpolelong_data[]={
 
-	  3,  0,0x14,0,
 	  3,  8,0x14,0,
-	  3,- 8,0x14,0,
-	  3,-16,0x14,0,
-
 	  3, 16,0x14,0,
+	  3,  0,0x14,0,
+	  3,- 8,0x14,0,
+
 	  3, 24,0x14,0,
-	  3,-24,0x14,0,
-	  3,-32,0x14,0,
-
-	  3,-40,0x14,0,
-	  3,-48,0x14,0,
 	  3, 32,0x14,0,
-	  3, 40,0x14,0,
+	  3,-16,0x14,0,
+	  3,-24,0x14,0,
 
-	  3,-56,0x14,0,
+	  3,-32,0x14,0,
+	  3,-40,0x14,0,
+	  3, 40,0x14,0,
 	  3, 48,0x14,0,
-	  3,-64,0x14,0,
+
+	  3,-48,0x14,0,
+	  3, 56,0x14,0,
+	  3,-56,0x14,0,
+	  0,-64,0x25,0,
 	0x80
 
 };
@@ -970,6 +969,24 @@ const unsigned char pitopen3_data[]={
 	  8,  0,0x26,0|OAM_FLIP_H,
 	  0,  8,0x26,0|OAM_FLIP_V,
 	  8,  8,0x26,0|OAM_FLIP_H|OAM_FLIP_V,
+	0x80
+
+};
+
+const unsigned char redarrow_data[]={
+
+	  0,  8,0x0b,0,
+	  8,  0,0x0b,0,
+	  8,  8,0x01,0,
+	  8, 16,0x01,0,
+
+	  8, 24,0x0b,0|OAM_FLIP_V,
+	  0, 16,0x0b,0|OAM_FLIP_V,
+	 16, 16,0x01,0,
+	 24, 16,0x01,0,
+
+	 16,  8,0x01,0,
+	 24,  8,0x01,0,
 	0x80
 
 };

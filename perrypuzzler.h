@@ -272,6 +272,18 @@ const unsigned char level_player_y[] = {
 
 
 
+//Main (most levels) Pallette:
+const unsigned char palette_perrytileset_a[16]={ 0x1a,0x30,0x0f,0x00,0x1a,0x21,0x11,0x30,0x1a,0x38,0x17,0x07,0x1a,0x17,0x2a,0x0f };
+
+//Nintendo Levels (Levels 15 and Level 17)
+const unsigned char palette_perrytilesetnintendocolors_a[16]={ 0x1a,0x10,0x0f,0x00,0x1a,0x15,0x10,0x30,0x1a,0x38,0x17,0x07,0x1a,0x17,0x2a,0x0f };
+
+//Perrygetout (cutscene) Pallette:
+const unsigned char palette_perrytilesetcutscenecolors_a[16]={ 0x21,0x30,0x0f,0x00,0x21,0x0f,0x20,0x00,0x21,0x38,0x17,0x07,0x21,0x17,0x2a,0x1a };
+
+//Title Screen Pallette:
+const unsigned char title_bg_palette[16]={ 0x0f,0x30,0x1a,0x15,0x0f,0x21,0x11,0x1a,0x0f,0x38,0x17,0x07,0x0f,0x17,0x2a,0x1a };
+
 
 
 const unsigned char palette_perrypuzzlesprites_a[16]={ 
@@ -279,8 +291,7 @@ const unsigned char palette_perrypuzzlesprites_a[16]={
   0x1a,0x11,0x21,0x20,
   0x1a,0x38,0x17,0x07,
   0x1a,0x0f,0x2d,0x3d };
-const unsigned char palette_perrytileset_a[16]={ 0x1a,0x30,0x0f,0x00,0x1a,0x21,0x11,0x30,0x1a,0x38,0x17,0x07,0x1a,0x17,0x2a,0x0f };
-const unsigned char title_bg_palette[16]={ 0x0f,0x30,0x1a,0x15,0x0f,0x21,0x11,0x1a,0x0f,0x38,0x17,0x07,0x0f,0x17,0x2a,0x1a };
+
 
 #define COL_ALL 1
 #define GOAL_FLAG 2
@@ -290,15 +301,15 @@ const unsigned char metatile_colision_map[] = {
 		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 		0, COL_ALL, COL_ALL, COL_ALL, COL_ALL, COL_ALL, COL_ALL, COL_ALL, COL_ALL, COL_ALL, COL_ALL, COL_ALL, COL_ALL, COL_ALL, COL_ALL, COL_ALL,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, GOAL_FLAG, COL_ALL, 0, COL_ALL, COL_ALL,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, COL_ALL,
-		0, 0, 0, COL_ALL, COL_ALL, COL_ALL, COL_ALL, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, COL_ALL, 0, COL_ALL, COL_ALL, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, COL_ALL, COL_ALL, COL_ALL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, COL_ALL, COL_ALL, 0, 0, 0, GOAL_FLAG, COL_ALL, 0, COL_ALL, COL_ALL,
+		COL_ALL, COL_ALL, COL_ALL, COL_ALL, COL_ALL, COL_ALL, COL_ALL, COL_ALL, COL_ALL, 0, 0, 0, 0, 0, 0, COL_ALL,
+		0, 0, 0, COL_ALL, COL_ALL, COL_ALL, COL_ALL, COL_ALL, COL_ALL, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, COL_ALL, 0, COL_ALL, COL_ALL, COL_ALL, COL_ALL, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, COL_ALL, COL_ALL, COL_ALL, COL_ALL, COL_ALL, COL_ALL, 0, 0, 0, COL_ALL, 0, 0, 0,
+		0, 0, COL_ALL, COL_ALL, 0, COL_ALL, 0, COL_ALL, COL_ALL, 0, 0, 0, 0, 0, 0, 0,
 		COL_ALL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		COL_ALL, COL_ALL, COL_ALL, COL_ALL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		COL_ALL, COL_ALL, COL_ALL, COL_ALL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 

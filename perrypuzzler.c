@@ -10,7 +10,7 @@
 #include "perrypuzzler.h"
 #include "MAPS/perrytiles.h"
 #include "MAPS/titletiles.h"
-
+    
 /**
  * Work Needed
  *
@@ -82,14 +82,14 @@ void main(void)
 			pad1 = pad_poll(0);
 			pad1_new = get_pad_new(0);
 
-			title_cutscene();
+			title_cutscene();  
 
 			if (pad1_new & PAD_START)
 			{
 				// init values
 				duck_exists = 1;
 				scroll_x = 0;
-				level = GIMMICK_UNPLUG_CONTROLLER; // debug this value
+				level = 0; // debug this value
 				pal_bg(palette_perrytileset_a);
 				init_level();
 				game_mode = MODE_GAME;
