@@ -264,27 +264,6 @@ void main(void)
 				}
 			}
 
-			if(level==GIMMICK_UNPLUG_CONTROLLER){
-				//todo remove this it won't work
-				one_vram_buffer(pad1&0b00000001 ? 49 : 48, NTADR_A(9, 1));
-				one_vram_buffer(pad1&0b00000010 ? 49 : 48, NTADR_A(10, 1));
-				one_vram_buffer(pad1&0b00000100 ? 49 : 48, NTADR_A(11, 1));
-				one_vram_buffer(pad1&0b00001000 ? 49 : 48, NTADR_A(12, 1));
-				one_vram_buffer(pad1&0b00010000 ? 49 : 48, NTADR_A(13, 1));
-				one_vram_buffer(pad1&0b00100000 ? 49 : 48, NTADR_A(14, 1));
-				one_vram_buffer(pad1&0b01000000 ? 49 : 48, NTADR_A(15, 1));
-				one_vram_buffer(pad1&0b10000000 ? 49 : 48, NTADR_A(16, 1));	
-
-				one_vram_buffer(pad1_new&0b00000001 ? 49 : 48, NTADR_A(9, 2));
-				one_vram_buffer(pad1_new&0b00000010 ? 49 : 48, NTADR_A(10, 2));
-				one_vram_buffer(pad1_new&0b00000100 ? 49 : 48, NTADR_A(11, 2));
-				one_vram_buffer(pad1_new&0b00001000 ? 49 : 48, NTADR_A(12, 2));
-				one_vram_buffer(pad1_new&0b00010000 ? 49 : 48, NTADR_A(13, 2));
-				one_vram_buffer(pad1_new&0b00100000 ? 49 : 48, NTADR_A(14, 2));
-				one_vram_buffer(pad1_new&0b01000000 ? 49 : 48, NTADR_A(15, 2));
-				one_vram_buffer(pad1_new&0b10000000 ? 49 : 48, NTADR_A(16, 2));	
-			}
-
 
 				powerpad_cur = read_powerpad(1);
 		process_powerpad(); // goes after the read
@@ -329,11 +308,13 @@ void draw_bg(void)
 {
 	ppu_off(); // screen off
 
+	
+
 	p_maps = Level_List[level];
 	// copy the collision map to c_map
 	memcpy(c_map, p_maps, 240);
 
-	// pal_bg(palette_bg);
+	
 	clear_vram_buffer();
 	set_data_pointer(Level_List[level]);
 
@@ -356,14 +337,6 @@ void draw_bg(void)
 			if (y == 0xe0)
 				break;
 		}
-		// multi_vram_buffer_horz("Level", 5, NTADR_A(3, 1));
-		// if(level < 9){
-		// 	one_vram_buffer(49 + level, NTADR_A(9, 1));
-		// } else {
-		// 	one_vram_buffer(49, NTADR_A(9, 1)); //1
-		// 	one_vram_buffer(39 + level, NTADR_A(10, 1)); //level-10
-		// }
-		multi_vram_buffer_horz("PERRY PUZZLE 2': TURBO", 22, NTADR_A(3, 2));
 	}
 	else
 	{
@@ -371,20 +344,6 @@ void draw_bg(void)
 		set_scroll_x(scroll_x);
 		nametable_to_use = 0;
 	}
-	for (y = 0;; y += 0x20)
-	{
-		for (x = 0;; x += 0x20)
-		{
-			address = get_ppu_addr(nametable_to_use, x, y);
-			index = (y & 0xf0) + (x >> 4);
-			buffer_4_mt(address, index); // ppu_address, index to the data
-			flush_vram_update2();
-			if (x == 0xe0)
-				break;
-		}
-		if (y == 0xe0)
-			break;
-	}
 
 	for (y = 0;; y += 0x20)
 	{
@@ -400,7 +359,21 @@ void draw_bg(void)
 		if (y == 0xe0)
 			break;
 	}
+	multi_vram_buffer_horz("Level", 5, NTADR_A(3, 1));
+	if(level < 9){
+		one_vram_buffer(49 + level, NTADR_A(9, 1));
+	} else {
+		one_vram_buffer(49, NTADR_A(9, 1)); //1
+		one_vram_buffer(39 + level, NTADR_A(10, 1)); //level-10
+	}
+	multi_vram_buffer_horz(level_text[level], level_text_length[level], NTADR_A(3, 2));
 
+	//set custom palette for some levels
+	if(level == GIMMICK_GAME_GENIE || level == GIMMICK_RESET || level == GIMMICK_NES){
+		pal_bg(palette_perrytilesetnintendocolors_a);
+	} else {
+		pal_bg(palette_perrytileset_a);
+	}
 	ppu_on_all(); // turn on screen
 }
 

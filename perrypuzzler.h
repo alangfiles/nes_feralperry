@@ -141,18 +141,12 @@ struct BoxGuy BoxGuy1 = {64,80,12,12, LEFT};
 #include "MAPS/levels/level15.c"
 #include "MAPS/levels/level16.c"
 #include "MAPS/levels/level17.c"
+#include "MAPS/levels/level18.c"
 
 #include "MAPS/levels/bigperry.c"
 
 
-#define GIMMICK_TWO_PLAYER 3
-#define GIMMICK_DUCK_HUNT 5
-#define GIMMICK_NINETY_DEGREE 4
-#define GIMMICK_SCREEN_SCROLL 6
-#define GIMMICK_TURBO_FLAGS 7
-#define GIMMICK_UNPLUG_CONTROLLER 8
 
-#define LAST_LEVEL 17
 
 /**
  * Level List
@@ -161,29 +155,41 @@ Level 2 - Maze to the house (no gimmick)
 Level 3 - Wrap Around (no gimmick)
 Level 4 - Road in middle, (2nd controller)
 Level 6 - Maze (90 degree gimmick)
+
 Level 5 - For the duck hunt statue (zapper gimmick (need zapper plus sprite blocking)
+Level 13 - gumshoe one - Zapper plus controller Shoot him and he'll move where he's facing. 
 Level 7 - Nametable 2 screen scroll gimmick (turbo)
 Level 8 - Flagpole Advantage Knob Turner (nes advantage turbo gimmick)
+Level 14 - Powerpad directional controls.  It's designed to look a little like a track and field event.  
+-- move power pad levels? lights out side A? lights out zapper side B?
+Level 16 - I imagined this for the game genie one.  It is really just a black box where you can put in some text.  
+Level 17 - (need to test) Reset the game - Top half of the screen is a grass area with a fenced in house.  Bottom half is a crude picture of the front of an NES.  
+
+--unused
 --Level 9 - Destroy the sprite barrier by putting sprites in a row
 --Level 10 - Powerpad Jehovah Indiana Jones.  The cones can look much better with a pallette tweak specifically for this level.  But that can be done later.  Level divided into 12 sectors.
 --Level 11 - For the lights out scenarios.  This would give you a 4x3 grid.  Any morand we might have to deal with changing the lights from sprites to BG.
 --Level 12 - All there is is a house behind a fence.  I imagined it as a no input level.  But if you want something to do, I could imagine the little lawnmower mowing all the grass here.  
-Level 13 - I think this is what you wanted for the gumshoe one - point him in direction, shoot him, and he'll zip as far as he can go in that direction.  I intend Perry to start two sqaures above the house. 
-Level 14 - Powerpad directional controls.  It's designed to look a little like a track and field event.  
-Level 15 - Just something I'm fiddling with.  I imagine using the buttons icons to move multiple characters.  I dunno.  
-Level 16 - I imagined this for the game genie one.  It is really just a black box where you can put in some text.  
-Level 17 - Reset the game - Top half of the screen is a grass area with a fenced in house.  Bottom half is a crude picture of the front of an NES.  
+--Level 15 - Just something I'm fiddling with.  I imagine using the buttons icons to move multiple characters.  I dunno.  
  */
 
+#define GIMMICK_TWO_PLAYER 3
+#define GIMMICK_NINETY_DEGREE 4
+#define GIMMICK_DUCK_HUNT 5
+#define GIMMICK_GUMSHOE 6
+#define GIMMICK_SCREEN_SCROLL 7
+#define GIMMICK_TURBO_FLAGS 8
+#define GIMMICK_TRACK_AND_FIELD 9
+#define GIMMICK_GAME_GENIE 10
+#define GIMMICK_RESET 11
+#define GIMMICK_NES 12
+
+#define LAST_LEVEL 12
 
 const unsigned char * const Level_List[] = {
-	level1_0, level2_0, level3_0, level4_0, level6_0, 
-	level5_0, level7_0, level8_0, 
-  // level9_0, level10_0, 
-	// level11_0, level12_0, level13_0, level14_0, level15_0, 
-  level12_0,
-	// level16_0, level17_0, 
-  bigperry_0
+	level1_0, level2_0, level3_0, level4_0, level6_0,  //5
+	level5_0, level13_0, level7_0, level8_0, level14_0, //10
+	level16_0, level17_0, level18_0, bigperry_0 //14
 	};
 
   //8 and 9 are levels 16 and 17
@@ -193,19 +199,15 @@ const unsigned char * const Level_List[] = {
   "Not so simple",
   "A bridge too far",
   "Two Player Game",
-  "Art Critic",  //5
-  "Two Player Game",
-  "Get to the end",
-  "Sync and Spin",
-  "Push it to the limit",
-  "Fancy footwork", //10
-  "Lights out",
-  "Anarchy",
-  "Point and shoot",
-  "Work it out",
-  "Push it", //15
-  "Cheat the system",
-  "Leap of faith",
+  "Psycho Mantis",  //5
+  "Art Critic",
+  "Gumshoe",
+  "Perry Fighter Two': Turbo",
+  "Turbo Advantage",
+  "Track and Field", //10
+  "GXSVAUVK",
+  "Have you tried reseting?",
+  "NROM256 For Perry"
 };
 
 //cant dynamically calcualte this somehow
@@ -213,20 +215,16 @@ const unsigned char level_text_length[] = {
   10,
   13,
   16,
-  10,
-  10,  //5
   15,
-  14,
-  13,
-  20,
-  13, //10
-  10,
-  7,
-  15,
+  13,  //5
   11,
-  7, //15
-  16, 
-  13,
+  7,
+  25,
+  15,
+  15, //10
+  8,
+  24,
+  17
 };
 
 
