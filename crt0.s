@@ -262,10 +262,12 @@ detectNTSC:
 	
 	
 	
+	
 .segment "RODATA"
 
 music_data:
 ;	.include "music.s"
+.include "MUSIC/nes_perry_puzzler.s"
 
 
 

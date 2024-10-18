@@ -15,11 +15,25 @@ enum
 
 #pragma bss-name(push, "ZEROPAGE")
 
+//SOME VARIABLES HOLDING SPACE FOR THE RESET LEVEL
+// should be $0000 to $0040
+unsigned char last_level1;
+unsigned char last_level2;
+unsigned char last_level3;
+unsigned char last_level4;
+unsigned char last_level5;
+unsigned char last_level6;
+unsigned char last_level7;
+unsigned char last_level8;
+
+unsigned char game_genie_code;
+
 // GLOBAL VARIABLES
 //zapper
 unsigned char pad2_zapper;
 unsigned char zapper_ready; //wait till it's 0
 unsigned char hit_detected;
+unsigned char player_moving;
 
 //powerpad
 unsigned int powerpad_cur;
@@ -199,28 +213,28 @@ const unsigned char * const Level_List[] = {
 
 	const unsigned char * const level_text[] = {
   "Easy Peasy",
-  "Not so simple",
-  "A bridge too far",
+  "A-maze-ing",
+  "That's a wrap",
   "Two Player Game",
-  "Psycho Mantis",  //5
+  "Tilt your head",  //5
   "Art Critic",
   "Gumshoe",
   "Perry Fighter Two': Turbo",
   "Turbo Advantage",
   "Track and Field", //10
-  "GXSVAUVK",
+  "ULSPOUNX",
   "Have you tried reseting?",
-  "NROM256 For Perry"
+  "A ROM with a view"
 };
 
 //cant dynamically calcualte this somehow
 const unsigned char level_text_length[] = {
   10,
+  10,
   13,
-  16,
   15,
-  13,  //5
-  11,
+  14,  //5
+  10,
   7,
   25,
   15,

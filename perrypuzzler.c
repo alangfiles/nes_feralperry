@@ -10,7 +10,7 @@
 #include "perrypuzzler.h"
 #include "MAPS/perrytiles.h"
 #include "MAPS/titletiles.h"
-    
+
 /**
  * Work Needed
  *
@@ -73,8 +73,30 @@ void main(void)
 
 	init_mode_title();
 
+	set_music_speed(8);
+	music_play(1);
+
+	game_genie_code = 0xAF; //0xA9 0xAF is the code we're looking for
+	ppu_wait_nmi();
+	if(game_genie_code == 0xBB){
+		duck_exists = 1;
+		scroll_x = 0;
+		level = GIMMICK_GAME_GENIE; // debug this value
+		pal_bg(palette_perrytileset_a);
+		init_level();
+		music_play(0);
+		game_mode = MODE_GAME;
+	}
+
 	while (1)
 	{
+
+		// check for last level gimmick
+		if (last_level1 == 0xFE || last_level2 == 0xFE || last_level3 == 0xFE || last_level4 == 0xFE || last_level5 == 0xFE || last_level6 == 0xFE || last_level7 == 0xFE || last_level8 == 0xFE)
+		{
+			level = GIMMICK_NES;
+			game_mode = MODE_GAME;
+		}
 
 		if (game_mode == MODE_TITLE)
 		{
@@ -82,16 +104,17 @@ void main(void)
 			pad1 = pad_poll(0);
 			pad1_new = get_pad_new(0);
 
-			title_cutscene();  
+			title_cutscene();
 
 			if (pad1_new & PAD_START)
 			{
 				// init values
 				duck_exists = 1;
 				scroll_x = 0;
-				level = GIMMICK_GUMSHOE; // debug this value
+				level = GIMMICK_GAME_GENIE; // debug this value
 				pal_bg(palette_perrytileset_a);
 				init_level();
+				music_play(0);
 				game_mode = MODE_GAME;
 			}
 		}
@@ -121,53 +144,88 @@ void main(void)
 		{
 			ppu_wait_nmi();
 
+			// debug code
+			//  pad1 = pad_poll(0);				 // read the first controller
+			//  pad1_new = get_pad_new(0); // newly pressed button. do pad_poll first
+			//  if(pad1_new & PAD_SELECT){
+			//  	level_up();
+			//  }
+
+			if(level == GIMMICK_RESET){
+				last_level1=0xFE;
+				last_level2=0xFE;
+				last_level3=0xFE;
+				last_level4=0xFE;
+				last_level5=0xFE;
+				last_level6=0xFE;
+				last_level7=0xFE;
+				last_level8=0xFE;
+			}
+
 			if (level == GIMMICK_TWO_PLAYER)
 			{
 				pad1 = pad_poll(1);				 // read the first controller
 				pad1_new = get_pad_new(1); // newly pressed button. do pad_poll first
 			}
-			else if(level == GIMMICK_TRACK_AND_FIELD){
+			else if (level == GIMMICK_TRACK_AND_FIELD)
+			{
 				powerpad_cur = read_powerpad(0);
 				process_powerpad(); // goes after the read
-									// transfers only new presses to powerpad_new
-									// powerpad_new isn't used here, but
-									// would be very useful for a game
+														// transfers only new presses to powerpad_new
+														// powerpad_new isn't used here, but
+														// would be very useful for a game
 
-				//2,3 face up
-				//5 face left
-				//8 face right
-				//10,11 face down
-				if(powerpad_new & POWERPAD_2){
+				// 2,3 face up
+				// 5 face left
+				// 8 face right
+				// 10,11 face down
+				if (powerpad_new & POWERPAD_2)
+				{
 					pad1_new = PAD_UP;
-				} else if(powerpad_new & POWERPAD_3){
+				}
+				else if (powerpad_new & POWERPAD_3)
+				{
 					pad1_new = PAD_UP;
-				} else if(powerpad_new & POWERPAD_5){
-					pad1_new = PAD_LEFT;
-				} else if(powerpad_new & POWERPAD_8){
+				}
+				else if (powerpad_new & POWERPAD_5)
+				{
 					pad1_new = PAD_RIGHT;
-				} else if(powerpad_new & POWERPAD_10){
-					pad1_new = PAD_DOWN;
-				} else if(powerpad_new & POWERPAD_11){
+				}
+				else if (powerpad_new & POWERPAD_8)
+				{
+					pad1_new = PAD_LEFT;
+				}
+				else if (powerpad_new & POWERPAD_10)
+				{
 					pad1_new = PAD_DOWN;
 				}
-				//change where they're looking.
+				else if (powerpad_new & POWERPAD_11)
+				{
+					pad1_new = PAD_DOWN;
+				}
+				// change where they're looking.
 				movement_user_direction();
 
-				if(powerpad_new & POWERPAD_6){
-					if(powerpad_old_button == POWERPAD_7){
+				if (powerpad_new & POWERPAD_6)
+				{
+					if (powerpad_old_button == POWERPAD_7)
+					{
+						amount_to_move = 2;
 						movement_user_forward();
 					}
 					powerpad_old_button = POWERPAD_6;
-				} else if(powerpad_new & POWERPAD_7){
-					if(powerpad_old_button == POWERPAD_6){
+				}
+				else if (powerpad_new & POWERPAD_7)
+				{
+					if (powerpad_old_button == POWERPAD_6)
+					{
+						amount_to_move = 2;
 						movement_user_forward();
 					}
 					powerpad_old_button = POWERPAD_7;
 				}
 
-				//user needs to press 6 then 7 to move forward.
-				
-			
+				// user needs to press 6 then 7 to move forward.
 			}
 			else
 			{
@@ -208,38 +266,47 @@ void main(void)
 				}
 			}
 
-
-			if( level == GIMMICK_GUMSHOE){
-				//update player movement
-				movement_user_direction();
-
-				zapper_ready = pad2_zapper ^ 1; // XOR last frame, make sure not held down still
-				// is trigger pulled?
-				pad2_zapper = zap_shoot(1); // controller slot 2
-				if ((pad2_zapper) && (zapper_ready))
+			if (level == GIMMICK_GUMSHOE)
+			{
+				// update player movement
+				if (player_moving)
 				{
-					// trigger pulled, play bang sound
-					// sfx_play(0, 0);
-					// bg off, project white boxes
-					oam_clear();
-					draw_shootable_box(); // redraw the star as a box
-					ppu_mask(0x16);				// BG off, won't happen till NEXT frame
+					// move player
+					movement_user_forward();
+				}
+				else
+				{
+					movement_user_direction();
 
-					ppu_wait_nmi(); // wait till the top of the next frame
-					// this frame will display no BG and a white box
-
-					draw_bg();
-					oam_clear();		// clear the NEXT frame
-					ppu_mask(0x1e); // bg on, won't happen till NEXT frame
-
-					hit_detected = zap_read(1); // look for light in zapper, port 2
-
-					if (hit_detected)
+					zapper_ready = pad2_zapper ^ 1; // XOR last frame, make sure not held down still
+					// is trigger pulled?
+					pad2_zapper = zap_shoot(1); // controller slot 2
+					if ((pad2_zapper) && (zapper_ready))
 					{
-						amount_to_move = 16;
-						movement_user_forward();
+						// trigger pulled, play bang sound
+						// sfx_play(0, 0);
+						// bg off, project white boxes
+						oam_clear();
+						draw_shootable_box(); // redraw the star as a box
+						ppu_mask(0x16);				// BG off, won't happen till NEXT frame
+
+						ppu_wait_nmi(); // wait till the top of the next frame
+						// this frame will display no BG and a white box
+
+						draw_bg();
+						oam_clear();		// clear the NEXT frame
+						ppu_mask(0x1e); // bg on, won't happen till NEXT frame
+
+						hit_detected = zap_read(1); // look for light in zapper, port 2
+
+						if (hit_detected)
+						{
+							player_moving = 1;
+							is_moving = 1;
+							amount_to_move = 4;
+						}
+						// if hit failed, it should have already ran into the next nmi
 					}
-					// if hit failed, it should have already ran into the next nmi
 				}
 			}
 			if (level == GIMMICK_SCREEN_SCROLL)
@@ -341,12 +408,12 @@ void main(void)
 				}
 			}
 
-
-			//this will expand for gumshoe
-			if(level != GIMMICK_TRACK_AND_FIELD && level != GIMMICK_GUMSHOE){
+			// this will expand for gumshoe
+			if (level != GIMMICK_TRACK_AND_FIELD && level != GIMMICK_GUMSHOE)
+			{
 				movement();
 			}
-			
+
 			draw_sprites();
 		}
 		else if (game_mode == MODE_LEVEL_END)
@@ -371,11 +438,13 @@ void main(void)
 
 void draw_shootable_box(void)
 {
-	if(level == GIMMICK_DUCK_HUNT && duck_exists){
+	if (level == GIMMICK_DUCK_HUNT && duck_exists)
+	{
 		oam_meta_spr(112, 136, White_duck_data);
 	}
-	
-	if(level == GIMMICK_GUMSHOE){
+
+	if (level == GIMMICK_GUMSHOE)
+	{
 		oam_meta_spr(BoxGuy1.X, BoxGuy1.Y, White_perry_data);
 	}
 }
@@ -384,13 +453,10 @@ void draw_bg(void)
 {
 	ppu_off(); // screen off
 
-	
-
 	p_maps = Level_List[level];
 	// copy the collision map to c_map
 	memcpy(c_map, p_maps, 240);
 
-	
 	clear_vram_buffer();
 	set_data_pointer(Level_List[level]);
 
@@ -436,18 +502,24 @@ void draw_bg(void)
 			break;
 	}
 	multi_vram_buffer_horz("Level", 5, NTADR_A(3, 1));
-	if(level < 9){
+	if (level < 9)
+	{
 		one_vram_buffer(49 + level, NTADR_A(9, 1));
-	} else {
-		one_vram_buffer(49, NTADR_A(9, 1)); //1
-		one_vram_buffer(39 + level, NTADR_A(10, 1)); //level-10
+	}
+	else
+	{
+		one_vram_buffer(49, NTADR_A(9, 1));					 // 1
+		one_vram_buffer(39 + level, NTADR_A(10, 1)); // level-10
 	}
 	multi_vram_buffer_horz(level_text[level], level_text_length[level], NTADR_A(3, 2));
 
-	//set custom palette for some levels
-	if(level == GIMMICK_GAME_GENIE || level == GIMMICK_RESET || level == GIMMICK_NES){
+	// set custom palette for some levels
+	if (level == GIMMICK_GAME_GENIE || level == GIMMICK_RESET || level == GIMMICK_NES)
+	{
 		pal_bg(palette_perrytilesetnintendocolors_a);
-	} else {
+	}
+	else
+	{
 		pal_bg(palette_perrytileset_a);
 	}
 	ppu_on_all(); // turn on screen
@@ -471,8 +543,8 @@ void draw_sprites(void)
 		oam_meta_spr(53, flag_a_pos, perryflag0_data);	// flag_a
 		oam_meta_spr(197, flag_b_pos, perryflag0_data); // flag_b
 
-		oam_meta_spr(51, 112, flagpolelong_data);
-		oam_meta_spr(195, 128, flagpolelong_data);
+		oam_meta_spr(51, 106, flagpolelong_data);
+		oam_meta_spr(195, 120, flagpolelong_data);
 	}
 
 	// draw 1 metasprite
@@ -481,44 +553,71 @@ void draw_sprites(void)
 
 void movement_user_direction(void)
 {
-	//change the direction he's looking
-	if (pad1_new & local_left){
+	// change the direction he's looking
+	if (pad1_new & local_left)
+	{
 		BoxGuy1.direction = LEFT;
 	}
-	else if (pad1_new & local_right){
+	else if (pad1_new & local_right)
+	{
 		BoxGuy1.direction = RIGHT;
-	} else if(pad1_new & local_up){
+	}
+	else if (pad1_new & local_up)
+	{
 		BoxGuy1.direction = UP;
-	} else if(pad1_new & local_down){
+	}
+	else if (pad1_new & local_down)
+	{
 		BoxGuy1.direction = DOWN;
 	}
 }
 
-#define USER_FORWARD 8
-void movement_user_forward(void){
+void movement_user_forward(void)
+{
 	// move based on direction.
 
-	if(BoxGuy1.direction == LEFT){
-		BoxGuy1.X -= USER_FORWARD;
-	} else if(BoxGuy1.direction == RIGHT){
-		BoxGuy1.X += USER_FORWARD;
-	} else if(BoxGuy1.direction == UP){
-		BoxGuy1.Y -= USER_FORWARD;
-	} else if(BoxGuy1.direction == DOWN){
-		BoxGuy1.Y += USER_FORWARD;
+	if (BoxGuy1.direction == LEFT)
+	{
+		BoxGuy1.X -= amount_to_move;
+	}
+	else if (BoxGuy1.direction == RIGHT)
+	{
+		BoxGuy1.X += amount_to_move;
+	}
+	else if (BoxGuy1.direction == UP)
+	{
+		BoxGuy1.Y -= amount_to_move;
+	}
+	else if (BoxGuy1.direction == DOWN)
+	{
+		BoxGuy1.Y += amount_to_move;
 	}
 	bg_collision();
 	if (collision_R)
-		BoxGuy1.X -= USER_FORWARD;
+	{
+		BoxGuy1.X -= amount_to_move;
+		player_moving = 0;
+		is_moving = 0;
+	}
 	if (collision_L)
-		BoxGuy1.X += USER_FORWARD;
+	{
+		BoxGuy1.X += amount_to_move;
+		player_moving = 0;
+		is_moving = 0;
+	}
 	if (collision_D)
-		BoxGuy1.Y -= USER_FORWARD;
+	{
+		BoxGuy1.Y -= amount_to_move;
+		player_moving = 0;
+		is_moving = 0;
+	}
 	if (collision_U)
-		BoxGuy1.Y += USER_FORWARD;
+	{
+		BoxGuy1.Y += amount_to_move;
+		player_moving = 0;
+		is_moving = 0;
+	}
 }
-
-	
 
 void movement(void)
 {
@@ -848,8 +947,12 @@ void title_cutscene(void)
 
 void init_level(void)
 {
+	
 	BoxGuy1.X = level_player_x[level];
 	BoxGuy1.Y = level_player_y[level];
+	if(game_genie_code == 0xBB){
+		BoxGuy1.X += 160;
+	}
 	oam_clear();
 	ppu_off();
 
@@ -1022,11 +1125,11 @@ void draw_player_sprite(void)
 	oam_meta_spr(BoxGuy1.X, BoxGuy1.Y, pointer2);
 }
 
-
 // do after the read
-void process_powerpad(void){
-	
-	powerpad_new = (powerpad_cur^powerpad_old)&powerpad_cur;
-	
+void process_powerpad(void)
+{
+
+	powerpad_new = (powerpad_cur ^ powerpad_old) & powerpad_cur;
+
 	powerpad_old = powerpad_cur;
-}	
+}
