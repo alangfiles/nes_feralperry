@@ -81,7 +81,7 @@ void main(void)
 	if(game_genie_code == 0xBB){
 		duck_exists = 1;
 		scroll_x = 0;
-		level = GIMMICK_GAME_GENIE; // debug this value
+		level = GIMMICK_GAME_GENIE; 
 		pal_bg(palette_perrytileset_a);
 		init_level();
 		music_play(0);
@@ -111,7 +111,7 @@ void main(void)
 				// init values
 				duck_exists = 1;
 				scroll_x = 0;
-				level = GIMMICK_GAME_GENIE; // debug this value
+				level = 0; // debug this value for starting level
 				pal_bg(palette_perrytileset_a);
 				init_level();
 				music_play(0);
@@ -241,7 +241,7 @@ void main(void)
 				if ((pad2_zapper) && (zapper_ready))
 				{
 					// trigger pulled, play bang sound
-					// sfx_play(0, 0);
+					
 					// bg off, project white boxes
 					oam_clear();
 					draw_shootable_box(); // redraw the star as a box
@@ -256,11 +256,14 @@ void main(void)
 
 					hit_detected = zap_read(1); // look for light in zapper, port 2
 
-					if (hit_detected)
+					if (hit_detected)  
 					{
+						sfx_play(SFX_CRASH, 0);
 						// play a sound when duck dies? (dog laughing?)
 						//  sfx_play(0, 0);
 						duck_exists = 0;
+					} else {
+						sfx_play(SFX_FALL, 0);
 					}
 					// if hit failed, it should have already ran into the next nmi
 				}
@@ -284,7 +287,7 @@ void main(void)
 					if ((pad2_zapper) && (zapper_ready))
 					{
 						// trigger pulled, play bang sound
-						// sfx_play(0, 0);
+						
 						// bg off, project white boxes
 						oam_clear();
 						draw_shootable_box(); // redraw the star as a box
@@ -301,9 +304,12 @@ void main(void)
 
 						if (hit_detected)
 						{
+							sfx_play(SFX_CRASH, 0);
 							player_moving = 1;
 							is_moving = 1;
 							amount_to_move = 4;
+						} else {
+							sfx_play(SFX_FALL, 0);
 						}
 						// if hit failed, it should have already ran into the next nmi
 					}
@@ -418,11 +424,11 @@ void main(void)
 		}
 		else if (game_mode == MODE_LEVEL_END)
 		{
+			sfx_play(SFX_VICTORY, 0);
 			for (index = 0; index < 100; ++index)
 			{
 				ppu_wait_nmi();
 			}
-
 			pal_fade_to(4, 0); // fade to black
 			level_up();
 			// move to center of tile

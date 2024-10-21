@@ -203,6 +203,34 @@ Level 17 - (need to test) Reset the game - Top half of the screen is a grass are
 
 #define LAST_LEVEL 12
 
+
+// 1.  A ringer that I imagine using when you get something right
+// 2. See above.
+// 3. See above.
+// 4.  A victory chime for ending a level
+// 5. A footstep to be alternated with number 6.  
+// 6. See above
+// 7.  A falling noise.  Intended to go with #9.  A fall and ten a crash, to be followed up with "PERRY!  GET OUT"
+// 8.  "Perry!"
+// 9. THe crash.  See 7 above. 
+// 10. an opening door noise if you wanted to try to use the expanding door animation to end the level.
+// 11. A closing door noise for the same. 
+// 12 "Get out"  
+enum {
+  SFX_RINGER1,
+  SFX_RINGER2,
+  SFX_RINGER3,
+  SFX_VICTORY,
+  SFX_STEP1,
+  SFX_STEP2,
+  SFX_FALL,
+  SFX_PERRY,
+  SFX_CRASH,
+  SFX_DOOROPEN,
+  SFX_DOORCLOSE,
+  SFX_GETOUT  
+};
+
 const unsigned char * const Level_List[] = {
 	level1_0, level2_0, level3_0, level4_0, level6_0,  //5
 	level5_0, level13_0, level7_0, level8_0, level14_0, //10
@@ -300,10 +328,10 @@ const unsigned char palette_perrytilesetcutscenecolors_a[16]={ 0x21,0x30,0x0f,0x
 const unsigned char title_bg_palette[16]={ 0x0f,0x30,0x1a,0x15,0x0f,0x21,0x11,0x1a,0x0f,0x38,0x17,0x07,0x0f,0x17,0x2a,0x1a };
 
 
-
+// sprite palette
 const unsigned char palette_perrypuzzlesprites_a[16]={ 
   0x1a,0x30,0x0f,0x15,
-  0x1a,0x11,0x21,0x20,
+  0x1a,0x11,0x21,0x30,
   0x1a,0x38,0x17,0x07,
   0x1a,0x0f,0x2d,0x3d };
 

@@ -299,6 +299,27 @@ const unsigned char perryflag2_data[]={
 
 };
 
+const unsigned char perryflagwhite0_data[]={
+
+	  0,  0,0x04,1,
+	0x80
+
+};
+
+const unsigned char perryflagwhite1_data[]={
+
+	  0,  0,0x05,1,
+	0x80
+
+};
+
+const unsigned char perryflagwhite2_data[]={
+
+	  0,  0,0x05,1,
+	0x80
+
+};
+
 const unsigned char blankflag0_data[]={
 
 	  0,  0,0x07,0,
@@ -316,6 +337,27 @@ const unsigned char blankflag1_data[]={
 const unsigned char blankflag2_data[]={
 
 	  0,  0,0x09,0,
+	0x80
+
+};
+
+const unsigned char blankflagwhite0_data[]={
+
+	  0,  0,0x07,1,
+	0x80
+
+};
+
+const unsigned char blankflagwhite1_data[]={
+
+	  0,  0,0x08,1,
+	0x80
+
+};
+
+const unsigned char blankflagwhite2_data[]={
+
+	  0,  0,0x09,1,
 	0x80
 
 };
@@ -993,13 +1035,22 @@ const unsigned char redarrow_data[]={
 
 const unsigned char White_perry_data[]={
 
-	  0,  0,0x03,0,
-	  8,  0,0x03,0,
-	  0,  8,0x03,0,
-	  8,  8,0x03,0,
+	  0,  0,0x01,1,
+	  8,  0,0x01,1,
+	 16,  0,0x01,1,
+	  0,  8,0x01,1,
+
+	  0, 16,0x01,1,
+	  8,  8,0x01,1,
+	 16,  8,0x01,1,
+	 16, 16,0x01,1,
+
+	  8, 16,0x01,1,
 	0x80
 
 };
+
+
 
 const unsigned char White_duck_data[]={
 
