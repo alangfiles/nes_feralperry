@@ -111,7 +111,7 @@ void main(void)
 				// init values
 				duck_exists = 1;
 				scroll_x = 0;
-				level = 0; // debug this value for starting level
+				level = GIMMICK_TURBO_FLAGS; // debug this value for starting level
 				pal_bg(palette_perrytileset_a);
 				init_level();
 				music_play(0);
@@ -412,6 +412,33 @@ void main(void)
 						++flag_b;
 					}
 				}
+
+				//check the flags and set them
+
+				if(flag_a >= TURBO_FLAG_A_MIN && flag_a <= TURBO_FLAG_A_MAX){
+					if(a_entering){
+						sfx_play(SFX_RINGER1, 0);	
+						a_entering = 0;
+					}
+					a_flag = 1;
+				}else{  
+					a_entering = 1;
+					a_flag = 0;
+				}
+
+				if(flag_b >= TURBO_FLAG_B_MIN && flag_b <= TURBO_FLAG_B_MAX){
+					if(b_entering){
+						sfx_play(SFX_RINGER2, 0);	
+						b_entering = 0;
+					}
+					b_flag = 1;
+				}else{
+					b_entering = 1;
+					b_flag = 0;
+				}
+
+
+
 			}
 
 			// this will expand for gumshoe
@@ -538,6 +565,14 @@ void draw_sprites(void)
 	if (level == GIMMICK_DUCK_HUNT && duck_exists)
 	{
 		oam_meta_spr(112, 136, Duck_data);
+	}
+
+	if(level == GIMMICK_TURBO_FLAGS){
+		if(a_flag == 0 || b_flag == 0){
+			//todo fix this location
+			oam_meta_spr(TURBO_LOCK_X, TURBO_LOCK_Y, lock_data);	//show the lock
+		}
+		
 	}
 
 	if (level == GIMMICK_TURBO_FLAGS)
@@ -684,7 +719,17 @@ void sprite_collision(void)
 			++collision_U;
 		}
 	}
-}
+	if(level == GIMMICK_TURBO_FLAGS){
+		if(a_flag == 0 || b_flag == 0){
+			if(
+				BoxGuy1.X >= TURBO_LOCK_X && BoxGuy1.X <= TURBO_LOCK_X+16 
+			&& BoxGuy1.Y >= TURBO_LOCK_Y && BoxGuy1.Y <= TURBO_LOCK_Y+16){
+				++collision_U; 
+			}
+		}
+	}
+  
+}  
 
 void bg_collision()
 {

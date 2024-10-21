@@ -75,6 +75,10 @@ unsigned char frame_count3;
 unsigned char frame_count4;
 unsigned char duck_exists;
 unsigned int scroll_x;
+unsigned char a_entering;
+unsigned char b_entering;
+unsigned char a_flag;
+unsigned char b_flag;
 
 unsigned char flag_a_pos;
 unsigned char flag_b_pos;
@@ -113,6 +117,12 @@ unsigned char index2;
 unsigned char c_map[240];
 // collision map 
 
+#define TURBO_LOCK_X 112
+#define TURBO_LOCK_Y 113
+#define TURBO_FLAG_B_MAX 73
+#define TURBO_FLAG_B_MIN 63
+#define TURBO_FLAG_A_MAX 96
+#define TURBO_FLAG_A_MIN 86
 
 enum {
 	LEFT,
