@@ -88,15 +88,15 @@ void main(void)
 		game_mode = MODE_GAME;
 	}
 
+	// check for last level gimmick
+	if (last_level1 == 0xFE || last_level2 == 0xFE || last_level3 == 0xFE || last_level4 == 0xFE || last_level5 == 0xFE || last_level6 == 0xFE || last_level7 == 0xFE || last_level8 == 0xFE)
+	{
+		level = GIMMICK_NES;
+		game_mode = MODE_GAME;
+	}
+
 	while (1)
 	{
-
-		// check for last level gimmick
-		if (last_level1 == 0xFE || last_level2 == 0xFE || last_level3 == 0xFE || last_level4 == 0xFE || last_level5 == 0xFE || last_level6 == 0xFE || last_level7 == 0xFE || last_level8 == 0xFE)
-		{
-			level = GIMMICK_NES;
-			game_mode = MODE_GAME;
-		}
 
 		if (game_mode == MODE_TITLE)
 		{
@@ -108,14 +108,20 @@ void main(void)
 
 			if (pad1_new & PAD_START)
 			{
-				// init values
-				duck_exists = 1;
-				scroll_x = 0;
-				level = GIMMICK_TURBO_FLAGS; // debug this value for starting level
-				pal_bg(palette_perrytileset_a);
-				init_level();
-				music_play(0);
-				game_mode = MODE_GAME;
+				music_stop();
+				init_mode_introcutscene();
+			}
+		}
+		else if(game_mode == MODE_INTRO_CUTSCENE){
+			ppu_wait_nmi();
+			pad1 = pad_poll(0);
+			pad1_new = get_pad_new(0);
+
+			intro_cutscene();
+
+			if (pad1_new & PAD_START)
+			{
+				init_mode_game();
 			}
 		}
 		else if (game_mode == MODE_GAME_OVER)
@@ -452,7 +458,7 @@ void main(void)
 		else if (game_mode == MODE_LEVEL_END)
 		{
 			sfx_play(SFX_VICTORY, 0);
-			for (index = 0; index < 100; ++index)
+			for (index = 0; index < 60; ++index)
 			{
 				ppu_wait_nmi();
 			}
@@ -534,21 +540,24 @@ void draw_bg(void)
 		if (y == 0xe0)
 			break;
 	}
-	multi_vram_buffer_horz("Level", 5, NTADR_A(3, 1));
-	if (level < 9)
-	{
-		one_vram_buffer(49 + level, NTADR_A(9, 1));
-	}
-	else
-	{
-		one_vram_buffer(49, NTADR_A(9, 1));					 // 1
-		one_vram_buffer(39 + level, NTADR_A(10, 1)); // level-10
-	}
-	multi_vram_buffer_horz(level_text[level], level_text_length[level], NTADR_A(3, 2));
+	//write level hint
+	if(level != PERRY_GET_OUT){
+		multi_vram_buffer_horz("Level", 5, NTADR_A(3, 1));
+		if (level < 9)
+		{
+			one_vram_buffer(49 + level, NTADR_A(9, 1));
+		}
+		else
+		{
+			one_vram_buffer(49, NTADR_A(9, 1));					 // 1
+			one_vram_buffer(39 + level, NTADR_A(10, 1)); // level-10
+		}
+		multi_vram_buffer_horz(level_text[level], level_text_length[level], NTADR_A(3, 2));
+	}  
 
 	// set custom palette for some levels
-	if (level == GIMMICK_GAME_GENIE || level == GIMMICK_RESET || level == GIMMICK_NES)
-	{
+	if (level == GIMMICK_GAME_GENIE || level == GIMMICK_RESET || level == GIMMICK_NES )
+	{  
 		pal_bg(palette_perrytilesetnintendocolors_a);
 	}
 	else
@@ -996,6 +1005,50 @@ void title_cutscene(void)
 	draw_player_sprite();
 }
 
+void intro_cutscene(void)
+{
+	oam_clear();
+
+// play the get out sfx
+	if(frame_count > 254){
+		return;
+	} else {
+		++frame_count;
+	}
+	
+	if(frame_count == 1){
+		sfx_play(SFX_GETOUT, 0);
+	}
+	//now perry gets out and walks
+
+	if(frame_count == 44){
+		sfx_play(SFX_DOOROPEN, 0);
+	}
+
+	if(frame_count > 64){
+		if(frame_count == 65){
+			sfx_play(SFX_DOORCLOSE, 0);
+		}	
+		//draw perry
+		
+		if(frame_count < 174){
+			//walk to road
+			is_moving = 1;
+			BoxGuy1.X += 1;
+			BoxGuy1.direction = RIGHT;
+			draw_player_sprite();	
+		} else {  
+			//walk down road
+			is_moving = 1;
+			BoxGuy1.Y += 1;   
+			BoxGuy1.direction = DOWN;
+			draw_player_sprite();
+		}
+	}
+	
+}
+
+
 void init_level(void)
 {
 	
@@ -1183,4 +1236,23 @@ void process_powerpad(void)
 	powerpad_new = (powerpad_cur ^ powerpad_old) & powerpad_cur;
 
 	powerpad_old = powerpad_cur;
+}
+
+void init_mode_game(void){
+	// init values
+	duck_exists = 1;
+	scroll_x = 0;
+	level = 0; // debug this value for starting level
+	pal_bg(palette_perrytileset_a);
+	init_level();
+	music_play(0);
+	game_mode = MODE_GAME;
+}
+
+void init_mode_introcutscene(void){
+	frame_count = 0;
+	level = PERRY_GET_OUT;
+	pal_bg(palette_perrytileset_a);
+	init_level();
+	game_mode = MODE_INTRO_CUTSCENE;
 }

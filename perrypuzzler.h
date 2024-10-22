@@ -2,6 +2,7 @@
 enum
 {
 	MODE_TITLE,
+  MODE_INTRO_CUTSCENE,
 	MODE_GAME,
 	MODE_PAUSE,
 	MODE_SWITCH,
@@ -171,6 +172,7 @@ struct BoxGuy BoxGuy1 = {64,80,12,12, LEFT};
 #include "MAPS/levels/level18.c"
 
 #include "MAPS/levels/bigperry.c"
+#include "MAPS/levels/perrygetout.c"
 
 
 
@@ -212,6 +214,7 @@ Level 17 - (need to test) Reset the game - Top half of the screen is a grass are
 #define GIMMICK_NES 12
 
 #define LAST_LEVEL 12
+#define PERRY_GET_OUT 14
 
 
 // 1.  A ringer that I imagine using when you get something right
@@ -244,7 +247,7 @@ enum {
 const unsigned char * const Level_List[] = {
 	level1_0, level2_0, level3_0, level4_0, level6_0,  //5
 	level5_0, level13_0, level7_0, level8_0, level14_0, //10
-	level16_0, level17_0, level18_0, bigperry_0 //14
+	level16_0, level17_0, level18_0, bigperry_0, perrygetout_0 //14
 	};
 
   //8 and 9 are levels 16 and 17
@@ -279,7 +282,7 @@ const unsigned char level_text_length[] = {
   15, //10
   8,
   24,
-  17
+  17,
 };
 
 
@@ -288,17 +291,17 @@ const unsigned char level_player_x[] = {
   32,
   16,
   16,
-  224,
+  224,//5
   11,
   32,
   112,
   128,
-  96,
+  96, //10
   32,
   128,
   32,
-  16,
-  16,
+  16,//14 last level
+  68, //perry get out
   16,
   32,
 };
@@ -318,8 +321,8 @@ const unsigned char level_player_y[] = {
   176,
   80,
   32,
-  128,
-  144,
+  164, //perry get out
+  1,
   80,
 };
 
@@ -385,3 +388,6 @@ void draw_shootable_box(void);
 void process_powerpad(void);
 void movement_user_direction(void);
 void movement_user_forward(void);
+void init_mode_game(void);
+void init_mode_introcutscene(void);
+void intro_cutscene(void);
