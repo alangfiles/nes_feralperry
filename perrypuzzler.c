@@ -75,6 +75,7 @@ void main(void)
 
 	set_music_speed(8);
 	music_play(1);
+	fade_on = 1;
 
 	game_genie_code = 0xAF; // 0xA9 0xAF is the code we're looking for
 	ppu_wait_nmi();
@@ -119,7 +120,14 @@ void main(void)
 			pad1 = pad_poll(0);
 			pad1_new = get_pad_new(0);
 
-			intro_cutscene();
+			if (level == PERRY_HOUSE)
+			{
+				intro_cutscene_one();
+			}
+			else
+			{
+				intro_cutscene_two();
+			}
 
 			if (pad1_new & PAD_START)
 			{
@@ -553,7 +561,7 @@ void draw_bg(void)
 			break;
 	}
 	// write level hint
-	if (level != PERRY_GET_OUT)
+	if (level != PERRY_GET_OUT && level != PERRY_HOUSE)
 	{
 		multi_vram_buffer_horz("Level", 5, NTADR_A(3, 1));
 		if (level < 9)
@@ -572,6 +580,10 @@ void draw_bg(void)
 	if (level == GIMMICK_GAME_GENIE || level == GIMMICK_RESET || level == GIMMICK_NES)
 	{
 		pal_bg(palette_perrytilesetnintendocolors_a);
+	}
+	else if (level == PERRY_GET_OUT || level == PERRY_HOUSE)
+	{
+		pal_bg(palette_perrytilesetcutscenecolors_a);
 	}
 	else
 	{
@@ -1032,40 +1044,80 @@ void title_cutscene(void)
 	draw_player_sprite();
 }
 
-void intro_cutscene(void)
+void intro_cutscene_one(void)
+{
+	// falling then crash noise,
+	//  then next level
+	oam_clear();
+	++frame_count;
+
+	if (frame_count == 40)
+	{
+		sfx_play(SFX_FALL, 0);
+	}
+
+	if (frame_count == 90)
+	{
+		sfx_play(SFX_CRASH, 0);
+	}
+
+	if (frame_count > 130)
+	{
+
+		level = PERRY_GET_OUT;
+		fade_on = 0;
+		init_level();
+		fade_on = 1;
+		frame_count = 0;
+		frame_count2 = 0;
+		game_mode = MODE_INTRO_CUTSCENE;
+	}
+}
+
+void intro_cutscene_two(void)
 {
 	oam_clear();
-
 	// play the get out sfx
 	if (frame_count > 254)
 	{
-		return;
+		++frame_count2;
 	}
 	else
 	{
 		++frame_count;
 	}
 
-	if (frame_count == 1)
+	if (frame_count2 > 250)
+	{
+		return;
+	}
+
+	// framecount1 work
+	//  perry gets out
+
+	if (frame_count == 100)
+	{
+		sfx_play(SFX_PERRY, 0);
+	}
+	if (frame_count == 140)
 	{
 		sfx_play(SFX_GETOUT, 0);
 	}
-	// now perry gets out and walks
 
-	if (frame_count == 44)
+	// if (frame_count == 170)
+	// {
+	// 	sfx_play(SFX_DOOROPEN, 0);
+	// }
+	// if (frame_count == 190)
+	// {
+	// 	sfx_play(SFX_DOORCLOSE, 0);
+	// }
+	// wait for a while.
+
+	if (frame_count2 > 1)
 	{
-		sfx_play(SFX_DOOROPEN, 0);
-	}
 
-	if (frame_count > 64)
-	{
-		if (frame_count == 65)
-		{
-			sfx_play(SFX_DOORCLOSE, 0);
-		}
-		// draw perry
-
-		if (frame_count < 174)
+		if (frame_count2 < 130)
 		{
 			// walk to road
 			is_moving = 1;
@@ -1075,11 +1127,14 @@ void intro_cutscene(void)
 		}
 		else
 		{
-			// walk down road
-			is_moving = 1;
-			BoxGuy1.Y += 1;
-			BoxGuy1.direction = DOWN;
-			draw_player_sprite();
+			if (BoxGuy1.Y < 248)  
+			{
+				// walk down road
+				is_moving = 1;
+				BoxGuy1.Y += 1;
+				BoxGuy1.direction = DOWN;
+				draw_player_sprite();
+			}
 		}
 	}
 }
@@ -1111,7 +1166,10 @@ void init_level(void)
 	// }
 	set_direction();
 	ppu_on_all();
-	pal_fade_to(0, 4);
+	if (fade_on != 0)
+	{
+		pal_fade_to(0, 4);
+	}
 }
 
 void set_direction(void)
@@ -1265,13 +1323,14 @@ void draw_player_sprite(void)
 
 	if (level == GIMMICK_SCREEN_SCROLL)
 	{
-		if(high_byte(player_x) == 0){
-			oam_meta_spr(low_byte(player_x), BoxGuy1.Y, pointer2);
+		if (high_byte(player_x) == 0)
+		{
+			oam_meta_spr(low_byte(player_x) - 1, BoxGuy1.Y - 2, pointer2);
 		}
 	}
 	else
 	{
-		oam_meta_spr(BoxGuy1.X, BoxGuy1.Y, pointer2);
+		oam_meta_spr(BoxGuy1.X - 1, BoxGuy1.Y - 2, pointer2);
 	}
 }
 
@@ -1299,8 +1358,8 @@ void init_mode_game(void)
 void init_mode_introcutscene(void)
 {
 	frame_count = 0;
-	level = PERRY_GET_OUT;
-	pal_bg(palette_perrytileset_a);
+	level = PERRY_HOUSE;
+	pal_bg(palette_perrytilesetcutscenecolors_a);
 	init_level();
 	game_mode = MODE_INTRO_CUTSCENE;
 }

@@ -99,6 +99,8 @@ const unsigned char * pointer2;
 unsigned int player_x;
 unsigned int player_y;
 
+unsigned char fade_on;
+
 struct Base {
 	unsigned char x;
 	unsigned char y;
@@ -176,6 +178,7 @@ struct BoxGuy BoxGuy1 = {64,80,12,12, LEFT};
 
 #include "MAPS/levels/bigperry.c"
 #include "MAPS/levels/perrygetout.c"
+#include "MAPS/levels/perryshouse.c"
 
 
 
@@ -218,6 +221,7 @@ Level 17 - (need to test) Reset the game - Top half of the screen is a grass are
 
 #define LAST_LEVEL 12
 #define PERRY_GET_OUT 14
+#define PERRY_HOUSE 15
 
 
 // 1.  A ringer that I imagine using when you get something right
@@ -250,7 +254,8 @@ enum {
 const unsigned char * const Level_List[] = {
 	level1_0, level2_0, level3_0, level4_0, level6_0,  //5
 	level5_0, level13_0, level7_0, level8_0, level14_0, //10
-	level16_0, level17_0, level18_0, bigperry_0, perrygetout_0 //14
+	level16_0, level17_0, level18_0, bigperry_0, perrygetout_0, //14
+  perryshouse_0,
 	};
 
   //8 and 9 are levels 16 and 17
@@ -338,7 +343,11 @@ const unsigned char palette_perrytileset_a[16]={ 0x1a,0x30,0x0f,0x00,0x1a,0x21,0
 const unsigned char palette_perrytilesetnintendocolors_a[16]={ 0x1a,0x10,0x0f,0x00,0x1a,0x15,0x10,0x30,0x1a,0x38,0x17,0x07,0x1a,0x17,0x2a,0x0f };
 
 //Perrygetout (cutscene) Pallette:
-const unsigned char palette_perrytilesetcutscenecolors_a[16]={ 0x21,0x30,0x0f,0x00,0x21,0x0f,0x20,0x00,0x21,0x38,0x17,0x07,0x21,0x17,0x2a,0x1a };
+const unsigned char palette_perrytilesetcutscenecolors_a[16]={ 
+  0x21,0x30,0x0f,0x00,
+0x21,0x0f,0x30,0x00, //old 0x21,0x0f,0x20,0x00,
+0x21,0x38,0x17,0x07,
+0x21,0x17,0x2a,0x1a };
 
 //Title Screen Pallette:
 const unsigned char title_bg_palette[16]={ 0x0f,0x30,0x1a,0x15,0x0f,0x21,0x11,0x1a,0x0f,0x38,0x17,0x07,0x0f,0x17,0x2a,0x1a };
@@ -393,4 +402,5 @@ void movement_user_direction(void);
 void movement_user_forward(void);
 void init_mode_game(void);
 void init_mode_introcutscene(void);
-void intro_cutscene(void);
+void intro_cutscene_one(void);
+void intro_cutscene_two(void);
