@@ -504,7 +504,7 @@ void draw_shootable_box(void)
 
 	if (level == GIMMICK_GUMSHOE)
 	{
-		oam_meta_spr(BoxGuy1.X, BoxGuy1.Y, White_perry_data);
+		oam_meta_spr(BoxGuy1.X-5, BoxGuy1.Y-6, White_perry_data);
 	}
 }
 
