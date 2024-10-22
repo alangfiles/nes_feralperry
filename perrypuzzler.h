@@ -96,6 +96,9 @@ unsigned char local_up;
 unsigned char local_down;
 const unsigned char * pointer2;
 
+unsigned int player_x;
+unsigned int player_y;
+
 struct Base {
 	unsigned char x;
 	unsigned char y;

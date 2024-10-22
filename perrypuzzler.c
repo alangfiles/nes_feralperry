@@ -76,12 +76,13 @@ void main(void)
 	set_music_speed(8);
 	music_play(1);
 
-	game_genie_code = 0xAF; //0xA9 0xAF is the code we're looking for
+	game_genie_code = 0xAF; // 0xA9 0xAF is the code we're looking for
 	ppu_wait_nmi();
-	if(game_genie_code == 0xBB){
+	if (game_genie_code == 0xBB)
+	{
 		duck_exists = 1;
 		scroll_x = 0;
-		level = GIMMICK_GAME_GENIE; 
+		level = GIMMICK_GAME_GENIE;
 		pal_bg(palette_perrytileset_a);
 		init_level();
 		music_play(0);
@@ -112,7 +113,8 @@ void main(void)
 				init_mode_introcutscene();
 			}
 		}
-		else if(game_mode == MODE_INTRO_CUTSCENE){
+		else if (game_mode == MODE_INTRO_CUTSCENE)
+		{
 			ppu_wait_nmi();
 			pad1 = pad_poll(0);
 			pad1_new = get_pad_new(0);
@@ -157,15 +159,16 @@ void main(void)
 			//  	level_up();
 			//  }
 
-			if(level == GIMMICK_RESET){
-				last_level1=0xFE;
-				last_level2=0xFE;
-				last_level3=0xFE;
-				last_level4=0xFE;
-				last_level5=0xFE;
-				last_level6=0xFE;
-				last_level7=0xFE;
-				last_level8=0xFE;
+			if (level == GIMMICK_RESET)
+			{
+				last_level1 = 0xFE;
+				last_level2 = 0xFE;
+				last_level3 = 0xFE;
+				last_level4 = 0xFE;
+				last_level5 = 0xFE;
+				last_level6 = 0xFE;
+				last_level7 = 0xFE;
+				last_level8 = 0xFE;
 			}
 
 			if (level == GIMMICK_TWO_PLAYER)
@@ -247,7 +250,7 @@ void main(void)
 				if ((pad2_zapper) && (zapper_ready))
 				{
 					// trigger pulled, play bang sound
-					
+
 					// bg off, project white boxes
 					oam_clear();
 					draw_shootable_box(); // redraw the star as a box
@@ -262,13 +265,15 @@ void main(void)
 
 					hit_detected = zap_read(1); // look for light in zapper, port 2
 
-					if (hit_detected)  
+					if (hit_detected)
 					{
 						sfx_play(SFX_CRASH, 0);
 						// play a sound when duck dies? (dog laughing?)
 						//  sfx_play(0, 0);
 						duck_exists = 0;
-					} else {
+					}
+					else
+					{
 						sfx_play(SFX_FALL, 0);
 					}
 					// if hit failed, it should have already ran into the next nmi
@@ -293,7 +298,7 @@ void main(void)
 					if ((pad2_zapper) && (zapper_ready))
 					{
 						// trigger pulled, play bang sound
-						
+
 						// bg off, project white boxes
 						oam_clear();
 						draw_shootable_box(); // redraw the star as a box
@@ -314,7 +319,9 @@ void main(void)
 							player_moving = 1;
 							is_moving = 1;
 							amount_to_move = 4;
-						} else {
+						}
+						else
+						{
 							sfx_play(SFX_FALL, 0);
 						}
 						// if hit failed, it should have already ran into the next nmi
@@ -419,32 +426,37 @@ void main(void)
 					}
 				}
 
-				//check the flags and set them
+				// check the flags and set them
 
-				if(flag_a >= TURBO_FLAG_A_MIN && flag_a <= TURBO_FLAG_A_MAX){
-					if(a_entering){
-						sfx_play(SFX_RINGER1, 0);	
+				if (flag_a >= TURBO_FLAG_A_MIN && flag_a <= TURBO_FLAG_A_MAX)
+				{
+					if (a_entering)
+					{
+						sfx_play(SFX_RINGER1, 0);
 						a_entering = 0;
 					}
 					a_flag = 1;
-				}else{  
+				}
+				else
+				{
 					a_entering = 1;
 					a_flag = 0;
 				}
 
-				if(flag_b >= TURBO_FLAG_B_MIN && flag_b <= TURBO_FLAG_B_MAX){
-					if(b_entering){
-						sfx_play(SFX_RINGER2, 0);	
+				if (flag_b >= TURBO_FLAG_B_MIN && flag_b <= TURBO_FLAG_B_MAX)
+				{
+					if (b_entering)
+					{
+						sfx_play(SFX_RINGER2, 0);
 						b_entering = 0;
 					}
 					b_flag = 1;
-				}else{
+				}
+				else
+				{
 					b_entering = 1;
 					b_flag = 0;
 				}
-
-
-
 			}
 
 			// this will expand for gumshoe
@@ -540,8 +552,9 @@ void draw_bg(void)
 		if (y == 0xe0)
 			break;
 	}
-	//write level hint
-	if(level != PERRY_GET_OUT){
+	// write level hint
+	if (level != PERRY_GET_OUT)
+	{
 		multi_vram_buffer_horz("Level", 5, NTADR_A(3, 1));
 		if (level < 9)
 		{
@@ -553,11 +566,11 @@ void draw_bg(void)
 			one_vram_buffer(39 + level, NTADR_A(10, 1)); // level-10
 		}
 		multi_vram_buffer_horz(level_text[level], level_text_length[level], NTADR_A(3, 2));
-	}  
+	}
 
 	// set custom palette for some levels
-	if (level == GIMMICK_GAME_GENIE || level == GIMMICK_RESET || level == GIMMICK_NES )
-	{  
+	if (level == GIMMICK_GAME_GENIE || level == GIMMICK_RESET || level == GIMMICK_NES)
+	{
 		pal_bg(palette_perrytilesetnintendocolors_a);
 	}
 	else
@@ -576,12 +589,13 @@ void draw_sprites(void)
 		oam_meta_spr(112, 136, Duck_data);
 	}
 
-	if(level == GIMMICK_TURBO_FLAGS){
-		if(a_flag == 0 || b_flag == 0){
-			//todo fix this location
-			oam_meta_spr(TURBO_LOCK_X, TURBO_LOCK_Y, lock_data);	//show the lock
+	if (level == GIMMICK_TURBO_FLAGS)
+	{
+		if (a_flag == 0 || b_flag == 0)
+		{
+			// todo fix this location
+			oam_meta_spr(TURBO_LOCK_X, TURBO_LOCK_Y, lock_data); // show the lock
 		}
-		
 	}
 
 	if (level == GIMMICK_TURBO_FLAGS)
@@ -598,7 +612,19 @@ void draw_sprites(void)
 	}
 
 	// draw 1 metasprite
-	draw_player_sprite();
+	if (level == GIMMICK_SCREEN_SCROLL)
+	{
+		// scroll_x is 0x0000 and the full screen is at 0x0100 - 0x01FF
+		// so the player location is 0x0100 + boxguy1.x
+		// so we want to subtract scroll_x from the player location
+
+		player_x = 0x0100 + BoxGuy1.X - scroll_x;
+		draw_player_sprite();
+	}
+	else
+	{
+		draw_player_sprite();
+	}
 }
 
 void movement_user_direction(void)
@@ -728,17 +754,18 @@ void sprite_collision(void)
 			++collision_U;
 		}
 	}
-	if(level == GIMMICK_TURBO_FLAGS){
-		if(a_flag == 0 || b_flag == 0){
-			if(
-				BoxGuy1.X >= TURBO_LOCK_X && BoxGuy1.X <= TURBO_LOCK_X+16 
-			&& BoxGuy1.Y >= TURBO_LOCK_Y && BoxGuy1.Y <= TURBO_LOCK_Y+16){
-				++collision_U; 
+	if (level == GIMMICK_TURBO_FLAGS)
+	{
+		if (a_flag == 0 || b_flag == 0)
+		{
+			if (
+					BoxGuy1.X >= TURBO_LOCK_X && BoxGuy1.X <= TURBO_LOCK_X + 16 && BoxGuy1.Y >= TURBO_LOCK_Y && BoxGuy1.Y <= TURBO_LOCK_Y + 16)
+			{
+				++collision_U;
 			}
 		}
 	}
-  
-}  
+}
 
 void bg_collision()
 {
@@ -1009,52 +1036,61 @@ void intro_cutscene(void)
 {
 	oam_clear();
 
-// play the get out sfx
-	if(frame_count > 254){
+	// play the get out sfx
+	if (frame_count > 254)
+	{
 		return;
-	} else {
+	}
+	else
+	{
 		++frame_count;
 	}
-	
-	if(frame_count == 1){
+
+	if (frame_count == 1)
+	{
 		sfx_play(SFX_GETOUT, 0);
 	}
-	//now perry gets out and walks
+	// now perry gets out and walks
 
-	if(frame_count == 44){
+	if (frame_count == 44)
+	{
 		sfx_play(SFX_DOOROPEN, 0);
 	}
 
-	if(frame_count > 64){
-		if(frame_count == 65){
+	if (frame_count > 64)
+	{
+		if (frame_count == 65)
+		{
 			sfx_play(SFX_DOORCLOSE, 0);
-		}	
-		//draw perry
-		
-		if(frame_count < 174){
-			//walk to road
+		}
+		// draw perry
+
+		if (frame_count < 174)
+		{
+			// walk to road
 			is_moving = 1;
 			BoxGuy1.X += 1;
 			BoxGuy1.direction = RIGHT;
-			draw_player_sprite();	
-		} else {  
-			//walk down road
+			draw_player_sprite();
+		}
+		else
+		{
+			// walk down road
 			is_moving = 1;
-			BoxGuy1.Y += 1;   
+			BoxGuy1.Y += 1;
 			BoxGuy1.direction = DOWN;
 			draw_player_sprite();
 		}
 	}
-	
 }
-
 
 void init_level(void)
 {
-	
+
 	BoxGuy1.X = level_player_x[level];
 	BoxGuy1.Y = level_player_y[level];
-	if(game_genie_code == 0xBB){
+	if (game_genie_code == 0xBB)
+	{
 		BoxGuy1.X += 160;
 	}
 	oam_clear();
@@ -1226,7 +1262,17 @@ void draw_player_sprite(void)
 		pointer2 = perrystandright_data;
 		break;
 	}
-	oam_meta_spr(BoxGuy1.X, BoxGuy1.Y, pointer2);
+
+	if (level == GIMMICK_SCREEN_SCROLL)
+	{
+		if(high_byte(player_x) == 0){
+			oam_meta_spr(low_byte(player_x), BoxGuy1.Y, pointer2);
+		}
+	}
+	else
+	{
+		oam_meta_spr(BoxGuy1.X, BoxGuy1.Y, pointer2);
+	}
 }
 
 // do after the read
@@ -1238,18 +1284,20 @@ void process_powerpad(void)
 	powerpad_old = powerpad_cur;
 }
 
-void init_mode_game(void){
+void init_mode_game(void)
+{
 	// init values
 	duck_exists = 1;
 	scroll_x = 0;
-	level = 0; // debug this value for starting level
+	level = GIMMICK_SCREEN_SCROLL; // debug this value for starting level
 	pal_bg(palette_perrytileset_a);
 	init_level();
 	music_play(0);
 	game_mode = MODE_GAME;
 }
 
-void init_mode_introcutscene(void){
+void init_mode_introcutscene(void)
+{
 	frame_count = 0;
 	level = PERRY_GET_OUT;
 	pal_bg(palette_perrytileset_a);
