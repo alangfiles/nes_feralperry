@@ -145,6 +145,11 @@ struct BoxGuy {
 	unsigned char direction;
 };
 
+enum {
+  MUSIC_VERNAL_TRIANGLE,
+  MUSIC_EH_TRAIN,
+  MUSIC_ALWAYS
+};
 
 struct BoxGuy BoxGuy1 = {64,80,12,12, LEFT};
 
@@ -271,7 +276,7 @@ const unsigned char * const Level_List[] = {
   "Perry Fighter Two': Turbo",
   "Turbo Advantage",
   "Track and Field", //10
-  "ULSPOUNX",
+  "ULSPESNX",
   "Have you tried reseting?",
   "A ROM with a view"
 };

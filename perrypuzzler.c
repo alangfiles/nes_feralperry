@@ -74,7 +74,8 @@ void main(void)
 	init_mode_title();
 
 	set_music_speed(8);
-	music_play(1);
+	//used for the intro
+	music_play(MUSIC_EH_TRAIN);
 	fade_on = 1;
 
 	game_genie_code = 0xAF; // 0xA9 0xAF is the code we're looking for
@@ -86,15 +87,24 @@ void main(void)
 		level = GIMMICK_GAME_GENIE;
 		pal_bg(palette_perrytileset_a);
 		init_level();
-		music_play(0);
+		music_play(MUSIC_ALWAYS);
 		game_mode = MODE_GAME;
 	}
 
 	// check for last level gimmick
-	if (last_level1 == 0xFE || last_level2 == 0xFE || last_level3 == 0xFE || last_level4 == 0xFE || last_level5 == 0xFE || last_level6 == 0xFE || last_level7 == 0xFE || last_level8 == 0xFE)
+	if (last_level1 > 0 || last_level2 > 0 || last_level3 > 0 || last_level4 > 0 || last_level5 > 0 || last_level6 > 0 || last_level7 > 0 || last_level8 > 0)
 	{
 		level = GIMMICK_NES;
 		game_mode = MODE_GAME;
+	} else {
+		last_level1 = 0;
+		last_level2 = 0;
+		last_level3 = 0;
+		last_level4 = 0;
+		last_level5 = 0;
+		last_level6 = 0;
+		last_level7 = 0;
+		last_level8 = 0;
 	}
 
 	while (1)
@@ -127,7 +137,7 @@ void main(void)
 			else
 			{
 				intro_cutscene_two();
-			}
+			} 
 
 			if (pad1_new & PAD_START)
 			{
@@ -227,7 +237,7 @@ void main(void)
 				{
 					if (powerpad_old_button == POWERPAD_7)
 					{
-						amount_to_move = 2;
+						amount_to_move = 8;
 						movement_user_forward();
 					}
 					powerpad_old_button = POWERPAD_6;
@@ -236,7 +246,7 @@ void main(void)
 				{
 					if (powerpad_old_button == POWERPAD_6)
 					{
-						amount_to_move = 2;
+						amount_to_move = 8;
 						movement_user_forward();
 					}
 					powerpad_old_button = POWERPAD_7;
@@ -871,6 +881,14 @@ void level_up(void)
 	{
 		init_level();
 	}
+	if(level == 4){
+		set_music_speed(8);
+		music_play(MUSIC_EH_TRAIN);
+	}
+	if(level == 9){
+		set_music_speed(9);
+		music_play(MUSIC_ALWAYS);
+	}
 }
 
 #include "MAPS/levels/title.c"
@@ -1087,6 +1105,9 @@ void intro_cutscene_two(void)
 		++frame_count;
 	}
 
+	if(frame_count2 == 230){
+			multi_vram_buffer_horz("Help Perry find a new home!", 27, NTADR_A(2, 3));
+	}
 	if (frame_count2 > 250)
 	{
 		return;
@@ -1095,31 +1116,35 @@ void intro_cutscene_two(void)
 	// framecount1 work
 	//  perry gets out
 
-	if (frame_count == 100)
+	if (frame_count == 10)
 	{
 		sfx_play(SFX_PERRY, 0);
 	}
-	if (frame_count == 140)
+	if (frame_count == 50)
 	{
 		sfx_play(SFX_GETOUT, 0);
 	}
-
-	// if (frame_count == 170)
-	// {
-	// 	sfx_play(SFX_DOOROPEN, 0);
-	// }
-	// if (frame_count == 190)
-	// {
-	// 	sfx_play(SFX_DOORCLOSE, 0);
-	// }
+	
 	// wait for a while.
 
 	if (frame_count2 > 1)
 	{
 
-		if (frame_count2 < 130)
+		if (frame_count2 < 30)
 		{
-			// walk to road
+			if(frame_count2%2==0){
+					is_moving = 1;
+					BoxGuy1.X += 1;
+					BoxGuy1.direction = RIGHT;
+				} else {
+					is_moving = 0;
+					BoxGuy1.direction = RIGHT;
+				}
+
+			draw_player_sprite();
+		} else if (frame_count2 < 130)
+		{
+			
 			is_moving = 1;
 			BoxGuy1.X += 1;
 			BoxGuy1.direction = RIGHT;
@@ -1129,10 +1154,10 @@ void intro_cutscene_two(void)
 		{
 			if (BoxGuy1.Y < 248)  
 			{
-				// walk down road
 				is_moving = 1;
 				BoxGuy1.Y += 1;
 				BoxGuy1.direction = DOWN;
+				
 				draw_player_sprite();
 			}
 		}
@@ -1351,7 +1376,7 @@ void init_mode_game(void)
 	level = 0; // debug this value for starting level
 	pal_bg(palette_perrytileset_a);
 	init_level();
-	music_play(0);
+	music_play(MUSIC_VERNAL_TRIANGLE);
 	game_mode = MODE_GAME;
 }
 
