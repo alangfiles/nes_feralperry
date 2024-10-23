@@ -156,6 +156,7 @@ void main(void)
 			{
 				//play a new song?
 				// music_play(MUSIC_FINALE);
+				music_stop();
 				ending = 1;
 				init_level();
 				game_mode = MODE_GAME_OVER;
