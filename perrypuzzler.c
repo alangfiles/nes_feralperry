@@ -1373,7 +1373,7 @@ void init_mode_game(void)
 	// init values
 	duck_exists = 1;
 	scroll_x = 0;
-	level = 0; // debug this value for starting level
+	level = GIMMICK_TURBO_FLAGS; // debug this value for starting level
 	pal_bg(palette_perrytileset_a);
 	init_level();
 	music_play(MUSIC_VERNAL_TRIANGLE);

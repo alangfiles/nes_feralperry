@@ -13274,8 +13274,9 @@ L291F:	rts
 	sta     _scroll_x
 	sta     _scroll_x+1
 ;
-; level = 0; // debug this value for starting level
+; level = GIMMICK_TURBO_FLAGS; // debug this value for starting level
 ;
+	lda     #$08
 	sta     _level
 ;
 ; pal_bg(palette_perrytileset_a);
