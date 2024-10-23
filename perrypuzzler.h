@@ -80,6 +80,7 @@ unsigned char a_entering;
 unsigned char b_entering;
 unsigned char a_flag;
 unsigned char b_flag;
+unsigned char ending;
 
 unsigned char flag_a_pos;
 unsigned char flag_b_pos;
@@ -148,7 +149,8 @@ struct BoxGuy {
 enum {
   MUSIC_VERNAL_TRIANGLE,
   MUSIC_EH_TRAIN,
-  MUSIC_ALWAYS
+  MUSIC_ALWAYS,
+  MUSIC_FINALE
 };
 
 struct BoxGuy BoxGuy1 = {64,80,12,12, LEFT};
@@ -223,8 +225,8 @@ Level 17 - (need to test) Reset the game - Top half of the screen is a grass are
 #define GIMMICK_GAME_GENIE 10
 #define GIMMICK_RESET 11
 #define GIMMICK_NES 12
-
 #define LAST_LEVEL 12
+#define BIG_PERRY 13
 #define PERRY_GET_OUT 14
 #define PERRY_HOUSE 15
 

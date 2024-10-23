@@ -74,9 +74,10 @@ void main(void)
 	init_mode_title();
 
 	set_music_speed(8);
-	//used for the intro
+	// used for the intro
 	music_play(MUSIC_EH_TRAIN);
 	fade_on = 1;
+	ending = 0;
 
 	game_genie_code = 0xAF; // 0xA9 0xAF is the code we're looking for
 	ppu_wait_nmi();
@@ -96,7 +97,9 @@ void main(void)
 	{
 		level = GIMMICK_NES;
 		game_mode = MODE_GAME;
-	} else {
+	}
+	else
+	{
 		last_level1 = 0;
 		last_level2 = 0;
 		last_level3 = 0;
@@ -137,7 +140,7 @@ void main(void)
 			else
 			{
 				intro_cutscene_two();
-			} 
+			}
 
 			if (pad1_new & PAD_START)
 			{
@@ -149,9 +152,13 @@ void main(void)
 			ppu_wait_nmi();
 			pad1 = pad_poll(0);
 			pad1_new = get_pad_new(0);
-			if (pad1_new & PAD_START)
+			if (pad1_new & PAD_START && ending == 0)
 			{
-				game_mode = MODE_GAME;
+				//play a new song?
+				// music_play(MUSIC_FINALE);
+				ending = 1;
+				init_level();
+				game_mode = MODE_GAME_OVER;
 			}
 		}
 		else if (game_mode == MODE_LEVEL_SELECT)
@@ -514,7 +521,7 @@ void draw_shootable_box(void)
 
 	if (level == GIMMICK_GUMSHOE)
 	{
-		oam_meta_spr(BoxGuy1.X-5, BoxGuy1.Y-6, White_perry_data);
+		oam_meta_spr(BoxGuy1.X - 5, BoxGuy1.Y - 6, White_perry_data);
 	}
 }
 
@@ -570,8 +577,8 @@ void draw_bg(void)
 		if (y == 0xe0)
 			break;
 	}
-	// write level hint
-	if (level != PERRY_GET_OUT && level != PERRY_HOUSE)
+	// write level hint for not the last level
+	if (level <= LAST_LEVEL)
 	{
 		multi_vram_buffer_horz("Level", 5, NTADR_A(3, 1));
 		if (level < 9)
@@ -871,21 +878,31 @@ void init_mode_level_end(void)
 void level_up(void)
 {
 	++level;
-	if (level >= LAST_LEVEL)
+	if (level > LAST_LEVEL)
 	{
+		// we should init the cutscenes for the last level.
+		// level is now on big perry for when we show that.
+
+		--level; // back to nrom level
+		// fade_on = 0;
 		init_level();
+		// fade_on = 1;
+		++level; // use big perry when they prees enter
 		game_mode = MODE_GAME_OVER;
-		level = 0;
+		multi_vram_buffer_horz("Congratulations! Perry has", 26, NTADR_A(3, 1));
+		multi_vram_buffer_horz("found a home in your NES", 24, NTADR_A(3, 2));
 	}
 	else
 	{
 		init_level();
 	}
-	if(level == 4){
+	if (level == 4)
+	{
 		set_music_speed(8);
 		music_play(MUSIC_EH_TRAIN);
 	}
-	if(level == 9){
+	if (level == 9)
+	{
 		set_music_speed(9);
 		music_play(MUSIC_ALWAYS);
 	}
@@ -1105,8 +1122,9 @@ void intro_cutscene_two(void)
 		++frame_count;
 	}
 
-	if(frame_count2 == 230){
-			multi_vram_buffer_horz("Help Perry find a new home!", 27, NTADR_A(2, 3));
+	if (frame_count2 == 230)
+	{
+		multi_vram_buffer_horz("Help Perry find a new home!", 27, NTADR_A(2, 3));
 	}
 	if (frame_count2 > 250)
 	{
@@ -1124,7 +1142,7 @@ void intro_cutscene_two(void)
 	{
 		sfx_play(SFX_GETOUT, 0);
 	}
-	
+
 	// wait for a while.
 
 	if (frame_count2 > 1)
@@ -1132,19 +1150,23 @@ void intro_cutscene_two(void)
 
 		if (frame_count2 < 30)
 		{
-			if(frame_count2%2==0){
-					is_moving = 1;
-					BoxGuy1.X += 1;
-					BoxGuy1.direction = RIGHT;
-				} else {
-					is_moving = 0;
-					BoxGuy1.direction = RIGHT;
-				}
+			if (frame_count2 % 2 == 0)
+			{
+				is_moving = 1;
+				BoxGuy1.X += 1;
+				BoxGuy1.direction = RIGHT;
+			}
+			else
+			{
+				is_moving = 0;
+				BoxGuy1.direction = RIGHT;
+			}
 
 			draw_player_sprite();
-		} else if (frame_count2 < 130)
+		}
+		else if (frame_count2 < 130)
 		{
-			
+
 			is_moving = 1;
 			BoxGuy1.X += 1;
 			BoxGuy1.direction = RIGHT;
@@ -1152,12 +1174,12 @@ void intro_cutscene_two(void)
 		}
 		else
 		{
-			if (BoxGuy1.Y < 248)  
+			if (BoxGuy1.Y < 248)
 			{
 				is_moving = 1;
 				BoxGuy1.Y += 1;
 				BoxGuy1.direction = DOWN;
-				
+
 				draw_player_sprite();
 			}
 		}
@@ -1178,17 +1200,7 @@ void init_level(void)
 
 	game_mode = MODE_GAME;
 	draw_bg();
-	// debug, don't draw hints for now
-	// if(level < LAST_LEVEL){
-	// 	multi_vram_buffer_horz("Level", 5, NTADR_A(3, 1));
-	// 	if(level < 9){
-	// 		one_vram_buffer(49 + level, NTADR_A(9, 1));
-	// 	} else {
-	// 		one_vram_buffer(49, NTADR_A(9, 1)); //1
-	// 		one_vram_buffer(39 + level, NTADR_A(10, 1)); //level-10
-	// 	}
-	// 	multi_vram_buffer_horz(level_text[level], level_text_length[level], NTADR_A(3, 2));
-	// }
+
 	set_direction();
 	ppu_on_all();
 	if (fade_on != 0)
@@ -1373,7 +1385,7 @@ void init_mode_game(void)
 	// init values
 	duck_exists = 1;
 	scroll_x = 0;
-	level = GIMMICK_TURBO_FLAGS; // debug this value for starting level
+	level = GIMMICK_RESET; // debug this value for starting level
 	pal_bg(palette_perrytileset_a);
 	init_level();
 	music_play(MUSIC_VERNAL_TRIANGLE);
