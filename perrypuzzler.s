@@ -11068,40 +11068,40 @@ L2D35:	lda     _level
 	cmp     #$08
 	bne     L2D36
 ;
-; flag_a_pos = 160 - flag_a;
+; flag_b_pos = 160 - flag_b;
 ;
 	lda     #$A0
-	sec
-	sbc     _flag_a
-	sta     _flag_a_pos
-;
-; flag_b_pos = 176 - flag_b;
-;
-	lda     #$B0
 	sec
 	sbc     _flag_b
 	sta     _flag_b_pos
 ;
-; oam_meta_spr(53, flag_a_pos, perryflag0_data); // flag_a
+; flag_a_pos = 176 - flag_a;
+;
+	lda     #$B0
+	sec
+	sbc     _flag_a
+	sta     _flag_a_pos
+;
+; oam_meta_spr(53, flag_b_pos, perryflag0_data); // flag_a //b button
 ;
 	jsr     decsp2
 	lda     #$35
 	ldy     #$01
 	sta     (sp),y
-	lda     _flag_a_pos
+	lda     _flag_b_pos
 	dey
 	sta     (sp),y
 	lda     #<(_perryflag0_data)
 	ldx     #>(_perryflag0_data)
 	jsr     _oam_meta_spr
 ;
-; oam_meta_spr(197, flag_b_pos, perryflag0_data); // flag_b
+; oam_meta_spr(197, flag_a_pos, perryflag0_data); // flag_b //a button
 ;
 	jsr     decsp2
 	lda     #$C5
 	ldy     #$01
 	sta     (sp),y
-	lda     _flag_b_pos
+	lda     _flag_a_pos
 	dey
 	sta     (sp),y
 	lda     #<(_perryflag0_data)
@@ -14122,9 +14122,9 @@ L26FC:	jsr     _movement_user_direction
 	cmp     #$01
 	bne     L2DC8
 ;
-; amount_to_move = 2;
+; amount_to_move = 8;
 ;
-	lda     #$02
+	lda     #$08
 	sta     _amount_to_move
 ;
 ; movement_user_forward();
@@ -14153,9 +14153,9 @@ L2701:	lda     _powerpad_new
 	cmp     #$40
 	bne     L2DC9
 ;
-; amount_to_move = 2;
+; amount_to_move = 8;
 ;
-	lda     #$02
+	lda     #$08
 	sta     _amount_to_move
 ;
 ; movement_user_forward();
@@ -14624,9 +14624,9 @@ L2DD9:	lda     _pad1_new
 ; if (flag_a >= TURBO_FLAG_A_MIN && flag_a <= TURBO_FLAG_A_MAX)
 ;
 L2DDA:	lda     _flag_a
-	cmp     #$56
+	cmp     #$3F
 	bcc     L2DDF
-	cmp     #$61
+	cmp     #$4A
 	bcs     L2DDF
 ;
 ; if (a_entering)
@@ -14666,9 +14666,9 @@ L2DBB:	sta     _a_flag
 ; if (flag_b >= TURBO_FLAG_B_MIN && flag_b <= TURBO_FLAG_B_MAX)
 ;
 	lda     _flag_b
-	cmp     #$3F
+	cmp     #$56
 	bcc     L2DE4
-	cmp     #$4A
+	cmp     #$61
 	bcs     L2DE4
 ;
 ; if (b_entering)

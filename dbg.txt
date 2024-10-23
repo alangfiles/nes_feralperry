@@ -10,7 +10,7 @@ file	id=6,name="MUSIC/famitone2.s",size=27594,mtime=0x66AF9D75,mod=0
 file	id=7,name="MUSIC/nes_perry_puzzler.s",size=9696,mtime=0x67194230,mod=0
 file	id=8,name="MUSIC/perrysfx.s",size=10479,mtime=0x6716C888,mod=0
 file	id=9,name="perrypuzzler.chr",size=8192,mtime=0x6716CB6C,mod=0
-file	id=10,name="perrypuzzler.s",size=183490,mtime=0x6719731D,mod=1
+file	id=10,name="perrypuzzler.s",size=183512,mtime=0x6719754F,mod=1
 file	id=11,name="/usr/local/Cellar/cc65/2.19/share/cc65/asminc/longbranch.mac",size=2632,mtime=0x5ED2ADF3,mod=1
 file	id=12,name="/private/tmp/cc65-20211029-72602-uqb2uc/cc65-2.19/asminc/cpu.mac",size=843,mtime=0x5ED2ADF3,mod=5+6+8
 file	id=13,name="/private/tmp/cc65-20211029-72602-uqb2uc/cc65-2.19/asminc/zeropage.inc",size=721,mtime=0x5ED2ADF3,mod=13

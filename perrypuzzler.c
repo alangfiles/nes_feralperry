@@ -623,11 +623,11 @@ void draw_sprites(void)
 	if (level == GIMMICK_TURBO_FLAGS)
 	{
 
-		flag_a_pos = 160 - flag_a;
-		flag_b_pos = 176 - flag_b;
+		flag_b_pos = 160 - flag_b;
+		flag_a_pos = 176 - flag_a;
 
-		oam_meta_spr(53, flag_a_pos, perryflag0_data);	// flag_a
-		oam_meta_spr(197, flag_b_pos, perryflag0_data); // flag_b
+		oam_meta_spr(53, flag_b_pos, perryflag0_data);	// flag_a //b button
+		oam_meta_spr(197, flag_a_pos, perryflag0_data); // flag_b //a button
 
 		oam_meta_spr(51, 106, flagpolelong_data);
 		oam_meta_spr(195, 120, flagpolelong_data);
