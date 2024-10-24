@@ -279,7 +279,7 @@ const unsigned char * const Level_List[] = {
   "Perry Fighter Two': Turbo",
   "Turbo Advantage",
   "Track and Field", //10
-  "ULSPESNX",
+  "UUEONSNX",
   "Have you tried reseting?",
   "NROM with a view"
 };

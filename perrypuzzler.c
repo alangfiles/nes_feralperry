@@ -74,7 +74,18 @@ void main(void)
 
 	game_genie_code = 0xAF; // 0xA9 0xAF is the code we're looking for
 	ppu_wait_nmi();
-	if (game_genie_code == 0xBB)
+	if (
+			// last level gimmick
+			last_level1 == 0xFE || last_level2 == 0xFE || last_level3 == 0xFE || last_level4 == 0xFE || last_level5 == 0xFE || last_level6 == 0xFE || last_level7 == 0xFE || last_level8 == 0xFE)
+	{
+		level = GIMMICK_NES;
+		pal_bg(palette_perrytileset_a);
+		init_level();
+		song = MUSIC_ALWAYS;
+		music_play(song);
+		game_mode = MODE_GAME;
+	}
+	else if (game_genie_code == 0xBB)
 	{
 		duck_exists = 1;
 		scroll_x = 0;
@@ -85,21 +96,18 @@ void main(void)
 		music_play(song);
 		game_mode = MODE_GAME;
 	}
-
-	// check for last level gimmick
-	if (
-		last_level1 == 0xFE || last_level2 == 0xFE || last_level3 == 0xFE || last_level4 == 0xFE || last_level5 == 0xFE || last_level6 == 0xFE || last_level7 == 0xFE || last_level8 == 0xFE
-		)
-	{
-		level = GIMMICK_NES;
-		pal_bg(palette_perrytileset_a);
-		init_level();
-		song = MUSIC_ALWAYS;
-		music_play(song);
-		game_mode = MODE_GAME;
-	}
 	else
 	{
+		ppu_wait_nmi();
+
+		init_mode_title();
+
+		// used for the intro
+		song = MUSIC_EH_TRAIN;
+		music_play(song);
+		fade_on = 1;
+		ending = 0;
+
 		last_level1 = 0;
 		last_level2 = 0;
 		last_level3 = 0;
@@ -110,28 +118,22 @@ void main(void)
 		last_level8 = 0;
 	}
 
-	ppu_wait_nmi();
-
-	init_mode_title();
-
-	// used for the intro
-	song = MUSIC_EH_TRAIN;
-	music_play(song);
-	fade_on = 1;
-	ending = 0;
-
-	
-
 	while (1)
 	{
-		//set_music_speed(9); todo, set speed here per song.
-		//setup music speed
-		if(song != 0xFF){
-			if(song == MUSIC_EH_TRAIN){
+		// set_music_speed(9); todo, set speed here per song.
+		// setup music speed
+		if (song != 0xFF)
+		{
+			if (song == MUSIC_EH_TRAIN)
+			{  
 				set_music_speed(8);
-			}else if(song == MUSIC_ALWAYS){
+			}
+			else if (song == MUSIC_ALWAYS)
+			{
 				set_music_speed(11);
-			} else if(song == MUSIC_VERNAL_TRIANGLE){
+			}
+			else if (song == MUSIC_VERNAL_TRIANGLE)
+			{
 				set_music_speed(6);
 			}
 		}
@@ -178,8 +180,15 @@ void main(void)
 			pad1_new = get_pad_new(0);
 			if (pad1_new & PAD_START && ending == 0)
 			{
-				//play a new song?
-				set_music_speed(12);
+				last_level1 = 0;
+				last_level2 = 0;
+				last_level3 = 0;
+				last_level4 = 0;
+				last_level5 = 0;
+				last_level6 = 0;
+				last_level7 = 0;
+				last_level8 = 0;
+				// play a new song?
 				song = MUSIC_ALWAYS;
 				music_play(song);
 				ending = 1;
@@ -529,7 +538,7 @@ void main(void)
 			level_up();
 			// move to center of tile
 			//  draw_sprites();
-			// animate out   
+			// animate out
 		}
 		else
 		{
@@ -1234,7 +1243,9 @@ void init_level(void)
 	if (fade_on != 0)
 	{
 		pal_fade_to(0, 4);
-	} else {
+	}
+	else
+	{
 		pal_bright(4);
 	}
 }
@@ -1415,7 +1426,7 @@ void init_mode_game(void)
 	// init values
 	duck_exists = 1;
 	scroll_x = 0;
-	level = GIMMICK_RESET; // debug this value for starting level
+	level = 0; // debug this value for starting level
 	pal_bg(palette_perrytileset_a);
 	init_level();
 	song = MUSIC_VERNAL_TRIANGLE;
