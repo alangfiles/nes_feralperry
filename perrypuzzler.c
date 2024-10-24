@@ -14,11 +14,13 @@
 /**
  * Work Needed
  *
- * [] Sound FX
- * [] Music
- * [] More Levels
- * [] add other controller reading logic
- * [] update title screen
+ * [] fix fading / flickering for ending
+ * [] add another powerpad level
+ * [] add more spacing for turbo buttons
+ * [] do turbo based on rate of fire, max is at top?
+ * [] perry shrink when completing level?
+ * [] remove unused level files?
+ * [] ending song
  *
  */
 
@@ -69,15 +71,6 @@ void main(void)
 	bank_spr(1);
 	set_scroll_y(0xff); // shift the bg down 1 pixel
 	set_vram_buffer();
-	ppu_wait_nmi();
-
-	init_mode_title();
-
-	set_music_speed(8);
-	// used for the intro
-	music_play(MUSIC_EH_TRAIN);
-	fade_on = 1;
-	ending = 0;
 
 	game_genie_code = 0xAF; // 0xA9 0xAF is the code we're looking for
 	ppu_wait_nmi();
@@ -93,9 +86,14 @@ void main(void)
 	}
 
 	// check for last level gimmick
-	if (last_level1 > 0 || last_level2 > 0 || last_level3 > 0 || last_level4 > 0 || last_level5 > 0 || last_level6 > 0 || last_level7 > 0 || last_level8 > 0)
+	if (
+		last_level1 == 0xFE || last_level2 == 0xFE || last_level3 == 0xFE || last_level4 == 0xFE || last_level5 == 0xFE || last_level6 == 0xFE || last_level7 == 0xFE || last_level8 == 0xFE
+		)
 	{
 		level = GIMMICK_NES;
+		pal_bg(palette_perrytileset_a);
+		init_level();
+		music_play(MUSIC_ALWAYS);
 		game_mode = MODE_GAME;
 	}
 	else
@@ -110,8 +108,20 @@ void main(void)
 		last_level8 = 0;
 	}
 
+	ppu_wait_nmi();
+
+	init_mode_title();
+
+	// used for the intro
+	music_play(MUSIC_ALWAYS);
+	fade_on = 1;
+	ending = 0;
+
+	
+
 	while (1)
 	{
+		//set_music_speed(9); todo, set speed here per song.
 
 		if (game_mode == MODE_TITLE)
 		{
@@ -155,8 +165,8 @@ void main(void)
 			if (pad1_new & PAD_START && ending == 0)
 			{
 				//play a new song?
-				// music_play(MUSIC_FINALE);
-				music_stop();
+				set_music_speed(12);
+				music_play(MUSIC_ALWAYS);
 				ending = 1;
 				init_level();
 				game_mode = MODE_GAME_OVER;
@@ -504,7 +514,7 @@ void main(void)
 			level_up();
 			// move to center of tile
 			//  draw_sprites();
-			// animate out
+			// animate out   
 		}
 		else
 		{
@@ -881,13 +891,15 @@ void level_up(void)
 	++level;
 	if (level > LAST_LEVEL)
 	{
+		music_stop();
+		sfx_play(SFX_VICTORY, 0);
 		// we should init the cutscenes for the last level.
 		// level is now on big perry for when we show that.
 
 		--level; // back to nrom level
-		// fade_on = 0;
+		fade_on = 0;
 		init_level();
-		// fade_on = 1;
+		fade_on = 1;
 		++level; // use big perry when they prees enter
 		game_mode = MODE_GAME_OVER;
 		multi_vram_buffer_horz("Congratulations! Perry has", 26, NTADR_A(3, 1));
@@ -1207,6 +1219,8 @@ void init_level(void)
 	if (fade_on != 0)
 	{
 		pal_fade_to(0, 4);
+	} else {
+		pal_bright(4);
 	}
 }
 

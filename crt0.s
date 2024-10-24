@@ -173,18 +173,31 @@ clearVRAM:
 	bne @1
 
 clearRAM:
-    txa
+    txa           ; Transfer X to A (if needed)
+
 @1:
-    sta $000,x
-    sta $100,x
-    sta $200,x
-    sta $300,x
-    sta $400,x
-    sta $500,x
-    sta $600,x
-    sta $700,x
-    inx
-    bne @1
+    cpx #$32      ; Check if X is at 0x32 (start of range to skip)
+    beq @skipRange; If X equals 0x32, jump to skip the range
+
+    cpx #$3A      ; Check if X has passed 0x39 (end of range)
+    bcs @clear    ; If X >= 0x3A, go back to clearing
+
+@skipRange:
+    ldx #$3A      ; Set X to 0x3A to skip the range 0x32-0x39
+    jmp @clear    ; Jump back to continue clearing
+
+@clear:
+    sta $000,x    ; Store A at $000 + X
+    sta $100,x    ; Store A at $100 + X
+    sta $200,x    ; Store A at $200 + X
+    sta $300,x    ; Store A at $300 + X
+    sta $400,x    ; Store A at $400 + X
+    sta $500,x    ; Store A at $500 + X
+    sta $600,x    ; Store A at $600 + X
+    sta $700,x    ; Store A at $700 + X
+    inx           ; Increment X
+    bne @1        ; Repeat until X wraps around to 0
+
 
 	lda #4
 	jsr _pal_bright

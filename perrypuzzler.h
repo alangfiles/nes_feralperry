@@ -280,7 +280,7 @@ const unsigned char * const Level_List[] = {
   "Track and Field", //10
   "ULSPESNX",
   "Have you tried reseting?",
-  "A ROM with a view"
+  "NROM with a view"
 };
 
 //cant dynamically calcualte this somehow
