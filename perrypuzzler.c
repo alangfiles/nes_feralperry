@@ -81,7 +81,8 @@ void main(void)
 		level = GIMMICK_GAME_GENIE;
 		pal_bg(palette_perrytileset_a);
 		init_level();
-		music_play(MUSIC_ALWAYS);
+		song = MUSIC_ALWAYS;
+		music_play(song);
 		game_mode = MODE_GAME;
 	}
 
@@ -93,7 +94,8 @@ void main(void)
 		level = GIMMICK_NES;
 		pal_bg(palette_perrytileset_a);
 		init_level();
-		music_play(MUSIC_ALWAYS);
+		song = MUSIC_ALWAYS;
+		music_play(song);
 		game_mode = MODE_GAME;
 	}
 	else
@@ -113,7 +115,8 @@ void main(void)
 	init_mode_title();
 
 	// used for the intro
-	music_play(MUSIC_ALWAYS);
+	song = MUSIC_EH_TRAIN;
+	music_play(song);
 	fade_on = 1;
 	ending = 0;
 
@@ -122,6 +125,16 @@ void main(void)
 	while (1)
 	{
 		//set_music_speed(9); todo, set speed here per song.
+		//setup music speed
+		if(song != 0xFF){
+			if(song == MUSIC_EH_TRAIN){
+				set_music_speed(8);
+			}else if(song == MUSIC_ALWAYS){
+				set_music_speed(11);
+			} else if(song == MUSIC_VERNAL_TRIANGLE){
+				set_music_speed(6);
+			}
+		}
 
 		if (game_mode == MODE_TITLE)
 		{
@@ -134,6 +147,7 @@ void main(void)
 			if (pad1_new & PAD_START)
 			{
 				music_stop();
+				song = 0xFF;
 				init_mode_introcutscene();
 			}
 		}
@@ -166,7 +180,8 @@ void main(void)
 			{
 				//play a new song?
 				set_music_speed(12);
-				music_play(MUSIC_ALWAYS);
+				song = MUSIC_ALWAYS;
+				music_play(song);
 				ending = 1;
 				init_level();
 				game_mode = MODE_GAME_OVER;
@@ -911,13 +926,13 @@ void level_up(void)
 	}
 	if (level == 4)
 	{
-		set_music_speed(8);
-		music_play(MUSIC_EH_TRAIN);
+		song = MUSIC_EH_TRAIN;
+		music_play(song);
 	}
 	if (level == 9)
 	{
-		set_music_speed(9);
-		music_play(MUSIC_ALWAYS);
+		song = MUSIC_ALWAYS;
+		music_play(song);
 	}
 }
 
@@ -1403,7 +1418,8 @@ void init_mode_game(void)
 	level = GIMMICK_RESET; // debug this value for starting level
 	pal_bg(palette_perrytileset_a);
 	init_level();
-	music_play(MUSIC_VERNAL_TRIANGLE);
+	song = MUSIC_VERNAL_TRIANGLE;
+	music_play(song);
 	game_mode = MODE_GAME;
 }
 

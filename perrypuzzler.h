@@ -101,6 +101,7 @@ unsigned int player_x;
 unsigned int player_y;
 
 unsigned char fade_on;
+unsigned char song;
 
 struct Base {
 	unsigned char x;
