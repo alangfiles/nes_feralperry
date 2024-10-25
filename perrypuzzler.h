@@ -187,9 +187,39 @@ struct BoxGuy BoxGuy1 = {64,80,12,12, LEFT};
 #include "MAPS/levels/bigperry.c"
 #include "MAPS/levels/perrygetout.c"
 #include "MAPS/levels/perryshouse.c"
+#include "MAPS/levels/blackmap.c"
+#include "MAPS/levels/level17openNES.c"
+#include "MAPS/levels/level17closedfence.c"
 
 
 
+// 1.  A ringer that I imagine using when you get something right
+// 2. See above.
+// 3. See above.
+// 4.  A victory chime for ending a level
+// 5. A footstep to be alternated with number 6.  
+// 6. See above
+// 7.  A falling noise.  Intended to go with #9.  A fall and ten a crash, to be followed up with "PERRY!  GET OUT"
+// 8.  "Perry!"
+// 9. THe crash.  See 7 above. 
+// 10. an opening door noise if you wanted to try to use the expanding door animation to end the level.
+// 11. A closing door noise for the same. 
+// 12 "Get out"  
+enum {
+  SFX_RINGER1,
+  SFX_RINGER2,
+  SFX_RINGER3,
+  SFX_VICTORY,
+  SFX_STEP1,
+  SFX_STEP2,
+  SFX_FALL,
+  SFX_PERRY,
+  SFX_CRASH,
+  SFX_DOOROPEN,
+  SFX_DOORCLOSE,
+  SFX_GETOUT,
+  SFX_MISS 
+};
 
 /**
  * Level List
@@ -225,48 +255,27 @@ Level 17 - (need to test) Reset the game - Top half of the screen is a grass are
 #define GIMMICK_TRACK_AND_FIELD 9
 #define GIMMICK_GAME_GENIE 10
 #define GIMMICK_RESET 11
-#define GIMMICK_NES 12
-#define LAST_LEVEL 12
-#define BIG_PERRY 13
-#define PERRY_GET_OUT 14
-#define PERRY_HOUSE 15
+#define GIMMICK_RESET_TWO 12
+#define GIMMICK_NES 13
+#define LAST_LEVEL 13
+#define BIG_PERRY 14
+#define PERRY_GET_OUT 15
+#define PERRY_HOUSE 16
+#define BLANK_MAP 17
 
 
-// 1.  A ringer that I imagine using when you get something right
-// 2. See above.
-// 3. See above.
-// 4.  A victory chime for ending a level
-// 5. A footstep to be alternated with number 6.  
-// 6. See above
-// 7.  A falling noise.  Intended to go with #9.  A fall and ten a crash, to be followed up with "PERRY!  GET OUT"
-// 8.  "Perry!"
-// 9. THe crash.  See 7 above. 
-// 10. an opening door noise if you wanted to try to use the expanding door animation to end the level.
-// 11. A closing door noise for the same. 
-// 12 "Get out"  
-enum {
-  SFX_RINGER1,
-  SFX_RINGER2,
-  SFX_RINGER3,
-  SFX_VICTORY,
-  SFX_STEP1,
-  SFX_STEP2,
-  SFX_FALL,
-  SFX_PERRY,
-  SFX_CRASH,
-  SFX_DOOROPEN,
-  SFX_DOORCLOSE,
-  SFX_GETOUT  
-};
 
 const unsigned char * const Level_List[] = {
 	level1_0, level2_0, level3_0, level4_0, level6_0,  //5
 	level5_0, level13_0, level7_0, level8_0, level14_0, //10
-	level16_0, level17_0, level18_0, bigperry_0, perrygetout_0, //14
-  perryshouse_0,
+  // level16_0, level17_0, level18_0, bigperry_0, perrygetout_0, //14
+  level16_0, level17closedfence, level17openNES, level18_0, bigperry_0, //15
+  perrygetout_0, perryshouse_0, blackmap
 	};
 
   //8 and 9 are levels 16 and 17
+
+  
 
 	const unsigned char * const level_text[] = {
   "Easy Peasy",
@@ -279,8 +288,9 @@ const unsigned char * const Level_List[] = {
   "Perry Fighter Two': Turbo",
   "Turbo Advantage",
   "Track and Field", //10
-  "UUEONSNX",
+  "NXEOKSUU",
   "Have you tried reseting?",
+  "A HOME Entertainment System",
   "NROM with a view"
 };
 
@@ -298,8 +308,24 @@ const unsigned char level_text_length[] = {
   15, //10
   8,
   24,
-  17,
+  27,
+  16,
 };
+
+//easy
+  //maze
+  //wrap
+  //2nd player
+  //90 degree //5
+  //duck
+  //gumshoe
+  //screen scroll
+  //turbo flags
+  //track and field //10
+  //game genie
+  //reset
+  //reset 2
+  //nes
 
 
 const unsigned char level_player_x[] = {
@@ -307,18 +333,18 @@ const unsigned char level_player_x[] = {
   32,
   16,
   16,
-  224,//5
-  11,
+  40,//5
+  32,
   32,
   112,
   128,
-  96, //10
+  40, //10
   32,
-  128,
+  60,
   32,
-  16,//14 last level
+  80,//14 last level
   68, //perry get out
-  16,
+  68,
   32,
 };
 
@@ -327,18 +353,18 @@ const unsigned char level_player_y[] = {
   64,
   48,
   48,
-  64,
-  32,
+  60, //5
+  68,
   48,
   176,
-  80,
-  32,
+  160,
+  40, //10
   176,
-  176,
+  60,
   80,
-  32,
+  220,
   164, //perry get out
-  1,
+  164,
   80,
 };
 
@@ -363,10 +389,10 @@ const unsigned char title_bg_palette[16]={ 0x0f,0x30,0x1a,0x15,0x0f,0x21,0x11,0x
 
 // sprite palette
 const unsigned char palette_perrypuzzlesprites_a[16]={ 
-  0x1a,0x30,0x0f,0x15,
-  0x1a,0x11,0x21,0x30,
-  0x1a,0x38,0x17,0x07,
-  0x1a,0x0f,0x2d,0x3d };
+  0x2a,0x30,0x0f,0x15,
+  0x2a,0x11,0x21,0x20,
+  0x2a,0x38,0x17,0x07,
+  0x2a,0x0f,0x2d,0x10  };
 
 
 #define COL_ALL 1

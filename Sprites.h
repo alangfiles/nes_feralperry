@@ -1033,6 +1033,109 @@ const unsigned char redarrow_data[]={
 
 };
 
+const unsigned char whitebox24x24_data[]={
+
+	- 4,- 4,0x01,1,
+	  4,- 4,0x01,1,
+	 12,- 4,0x01,1,
+	- 4,  4,0x01,1,
+
+	- 4, 12,0x01,1,
+	  4,  4,0x01,1,
+	 12,  4,0x01,1,
+	 12, 12,0x01,1,
+
+	  4, 12,0x01,1,
+	0x80
+
+};
+
+const unsigned char housemaskingsprite_data[]={
+
+	  0,  0,0xd8,3,
+	  0,  8,0xe8,3,
+	  8,  0,0xd8,3|OAM_FLIP_H,
+	  8,  8,0xe8,3|OAM_FLIP_H,
+	0x80
+
+};
+
+const unsigned char bifglagred0_data[]={
+
+	  0,  0,0xb6,0,
+	  8,  0,0xb7,0,
+	  0,  8,0xc6,0,
+	  8,  8,0xc7,0,
+	0x80
+
+};
+
+const unsigned char bigflagred1_data[]={
+
+	  0,  0,0xb6,0,
+	  8,  0,0xb8,0,
+	  0,  8,0xc6,0,
+	  8,  8,0xc8,0,
+	0x80
+
+};
+
+const unsigned char biflagred2_data[]={
+
+	  0,  0,0xb6,0,
+	  8,  0,0xb9,0,
+	  0,  8,0xc6,0,
+	  8,  8,0xc9,0,
+	0x80
+
+};
+
+const unsigned char bigflagred3_data[]={
+
+	  0,  0,0xba,0,
+	  0,  8,0xca,0,
+	0x80
+
+};
+
+const unsigned char bifglagwhite0_data[]={
+
+	  0,  0,0xb6,1,
+	  8,  0,0xb7,1,
+	  0,  8,0xc6,1,
+	  8,  8,0xc7,1,
+	0x80
+
+};
+
+const unsigned char bigflagwhite1_data[]={
+
+	  0,  0,0xb6,1,
+	  8,  0,0xb8,1,
+	  0,  8,0xc6,1,
+	  8,  8,0xc8,1,
+	0x80
+
+};
+
+const unsigned char bigflagwhite2_data[]={
+
+	  0,  0,0xb6,1,
+	  8,  0,0xb9,1,
+	  0,  8,0xc6,1,
+	  8,  8,0xc9,1,
+	0x80
+
+};
+
+const unsigned char bigflagwhite3_data[]={
+
+	  0,  0,0xba,1,
+	  0,  8,0xca,1,
+	0x80
+
+};
+
 const unsigned char White_perry_data[]={
 
 	  0,  0,0x01,1,

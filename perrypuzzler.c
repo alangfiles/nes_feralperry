@@ -78,7 +78,7 @@ void main(void)
 			// last level gimmick
 			last_level1 == 0xFE || last_level2 == 0xFE || last_level3 == 0xFE || last_level4 == 0xFE || last_level5 == 0xFE || last_level6 == 0xFE || last_level7 == 0xFE || last_level8 == 0xFE)
 	{
-		level = GIMMICK_NES;
+		level = GIMMICK_RESET_TWO;
 		pal_bg(palette_perrytileset_a);
 		init_level();
 		song = MUSIC_ALWAYS;
@@ -174,7 +174,7 @@ void main(void)
 			}
 		}
 		else if (game_mode == MODE_GAME_OVER)
-		{
+		{  
 			ppu_wait_nmi();
 			pad1 = pad_poll(0);
 			pad1_new = get_pad_new(0);
@@ -319,7 +319,7 @@ void main(void)
 					ppu_wait_nmi(); // wait till the top of the next frame
 					// this frame will display no BG and a white box
 
-					draw_bg();
+					draw_bg(); 
 					oam_clear();		// clear the NEXT frame
 					ppu_mask(0x1e); // bg on, won't happen till NEXT frame
 
@@ -334,7 +334,7 @@ void main(void)
 					}
 					else
 					{
-						sfx_play(SFX_FALL, 0);
+						sfx_play(SFX_MISS, 0);
 					}
 					// if hit failed, it should have already ran into the next nmi
 				}
@@ -374,7 +374,7 @@ void main(void)
 						hit_detected = zap_read(1); // look for light in zapper, port 2
 
 						if (hit_detected)
-						{
+						{  
 							sfx_play(SFX_CRASH, 0);
 							player_moving = 1;
 							is_moving = 1;
@@ -382,7 +382,7 @@ void main(void)
 						}
 						else
 						{
-							sfx_play(SFX_FALL, 0);
+							sfx_play(SFX_MISS, 0);
 						}
 						// if hit failed, it should have already ran into the next nmi
 					}
@@ -629,14 +629,15 @@ void draw_bg(void)
 	}
 
 	// set custom palette for some levels
-	if (level == GIMMICK_GAME_GENIE || level == GIMMICK_RESET || level == GIMMICK_NES)
+	//todo should game genie level go here?
+	if (level == GIMMICK_RESET || level == GIMMICK_RESET_TWO || level == GIMMICK_NES)
 	{
 		pal_bg(palette_perrytilesetnintendocolors_a);
 	}
 	else if (level == PERRY_GET_OUT || level == PERRY_HOUSE)
 	{
 		pal_bg(palette_perrytilesetcutscenecolors_a);
-	}
+	}  
 	else
 	{
 		pal_bg(palette_perrytileset_a);
@@ -915,7 +916,7 @@ void level_up(void)
 	++level;
 	if (level > LAST_LEVEL)
 	{
-		music_stop();
+		// music_stop();
 		sfx_play(SFX_VICTORY, 0);
 		// we should init the cutscenes for the last level.
 		// level is now on big perry for when we show that.
@@ -1230,7 +1231,7 @@ void init_level(void)
 	BoxGuy1.Y = level_player_y[level];
 	if (game_genie_code == 0xBB)
 	{
-		BoxGuy1.X += 160;
+		BoxGuy1.X += 170;
 	}
 	oam_clear();
 	ppu_off();
