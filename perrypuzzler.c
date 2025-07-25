@@ -189,7 +189,7 @@ void main(void)
 				last_level7 = 0;
 				last_level8 = 0;
 				// play a new song?
-				song = MUSIC_ALWAYS;
+				song = MUSIC_FINALE;
 				music_play(song);
 				ending = 1;
 				init_level();
@@ -213,11 +213,6 @@ void main(void)
 			ppu_wait_nmi();
 
 			// debug code
-			//  pad1 = pad_poll(0);				 // read the first controller
-			//  pad1_new = get_pad_new(0); // newly pressed button. do pad_poll first
-			//  if(pad1_new & PAD_SELECT){
-			//  	level_up();
-			//  }
 
 			if (level == GIMMICK_RESET)
 			{
@@ -391,7 +386,7 @@ void main(void)
 			if (level == GIMMICK_SCREEN_SCROLL)
 			{
 				++frame_count;
-				if (frame_count == 20)
+				if (frame_count == 40)
 				{
 					if (scroll_x > 0)
 					{
@@ -405,7 +400,7 @@ void main(void)
 				{
 					if (scroll_x < 256)
 					{
-						scroll_x += 1;
+						scroll_x += 2;
 					}
 				}
 			}
@@ -494,11 +489,17 @@ void main(void)
 					{
 						sfx_play(SFX_RINGER1, 0);
 						a_entering = 0;
+						a_exiting = 1;
 					}
 					a_flag = 1;
 				}
 				else
 				{
+					if (a_exiting)
+					{
+						sfx_play(SFX_MISS, 0);
+						a_exiting = 0;
+					}
 					a_entering = 1;
 					a_flag = 0;
 				}
@@ -507,13 +508,19 @@ void main(void)
 				{
 					if (b_entering)
 					{
-						sfx_play(SFX_RINGER2, 0);
+						sfx_play(SFX_RINGER1, 0);
 						b_entering = 0;
+						b_exiting = 1;
 					}
 					b_flag = 1;
 				}
-				else
+				else  
 				{
+					if (b_exiting)
+					{
+						sfx_play(SFX_MISS, 0);
+						b_exiting = 0;
+					}
 					b_entering = 1;
 					b_flag = 0;
 				}
@@ -612,9 +619,17 @@ void draw_bg(void)
 		if (y == 0xe0)
 			break;
 	}
+
+	if(level == GIMMICK_TWO_PLAYER){
+		//perry is gray for 2nd player game.	
+		pal_spr(palette_perrypuzzlesprites_b);
+	} else {
+		pal_spr(palette_perrypuzzlesprites_a);
+	}
+
 	// write level hint for not the last level
 	if (level <= LAST_LEVEL)
-	{
+	{  
 		multi_vram_buffer_horz("Level", 5, NTADR_A(3, 1));
 		if (level < 9)
 		{
@@ -630,7 +645,7 @@ void draw_bg(void)
 
 	// set custom palette for some levels
 	//todo should game genie level go here?
-	if (level == GIMMICK_RESET || level == GIMMICK_RESET_TWO || level == GIMMICK_NES)
+	if (level == GIMMICK_RESET || level == GIMMICK_RESET_TWO)
 	{
 		pal_bg(palette_perrytilesetnintendocolors_a);
 	}
@@ -663,14 +678,18 @@ void draw_sprites(void)
 		}
 	}
 
+	if(level == GIMMICK_RESET_TWO){
+		oam_meta_spr(48, 160, housemaskingsprite_data);
+	}
+
 	if (level == GIMMICK_TURBO_FLAGS)
 	{
+  
+		flag_b_pos = 152 - flag_b;
+		flag_a_pos = 168 - flag_a;
 
-		flag_b_pos = 160 - flag_b;
-		flag_a_pos = 176 - flag_a;
-
-		oam_meta_spr(53, flag_b_pos, perryflag0_data);	// flag_a //b button
-		oam_meta_spr(197, flag_a_pos, perryflag0_data); // flag_b //a button
+		oam_meta_spr(53, flag_b_pos, bifglagred0_data);	// flag_a //b button
+		oam_meta_spr(197, flag_a_pos, bifglagred0_data); // flag_b //a button
 
 		oam_meta_spr(51, 106, flagpolelong_data);
 		oam_meta_spr(195, 120, flagpolelong_data);
@@ -912,23 +931,27 @@ void init_mode_level_end(void)
 }
 
 void level_up(void)
-{
+{   
+	BoxGuy1.direction = RIGHT;
 	++level;
 	if (level > LAST_LEVEL)
 	{
-		// music_stop();
+		
 		sfx_play(SFX_VICTORY, 0);
 		// we should init the cutscenes for the last level.
 		// level is now on big perry for when we show that.
 
-		--level; // back to nrom level
+		// --level; // back to nrom level
+		level = BLANK_MAP;
 		fade_on = 0;
 		init_level();
-		fade_on = 1;
+		// fade_on = 1;
 		++level; // use big perry when they prees enter
+		level = BIG_PERRY;
 		game_mode = MODE_GAME_OVER;
-		multi_vram_buffer_horz("Congratulations! Perry has", 26, NTADR_A(3, 1));
-		multi_vram_buffer_horz("found a home in your NES", 24, NTADR_A(3, 2));
+		// music_pause(0); 
+		multi_vram_buffer_horz("Congratulations! Perry has", 26, NTADR_A(3, 10));
+		multi_vram_buffer_horz("found a home in your NES", 24, NTADR_A(3, 12));
 	}
 	else
 	{
@@ -1227,11 +1250,13 @@ void intro_cutscene_two(void)
 void init_level(void)
 {
 
+	is_moving = 0;
+
 	BoxGuy1.X = level_player_x[level];
 	BoxGuy1.Y = level_player_y[level];
-	if (game_genie_code == 0xBB)
+	if (game_genie_code == 0xBB && level == GIMMICK_GAME_GENIE)
 	{
-		BoxGuy1.X += 170;
+		BoxGuy1.X += 178;
 	}
 	oam_clear();
 	ppu_off();
@@ -1442,4 +1467,4 @@ void init_mode_introcutscene(void)
 	pal_bg(palette_perrytilesetcutscenecolors_a);
 	init_level();
 	game_mode = MODE_INTRO_CUTSCENE;
-}
+} 

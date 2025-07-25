@@ -78,6 +78,8 @@ unsigned char duck_exists;
 unsigned int scroll_x;
 unsigned char a_entering;
 unsigned char b_entering;
+unsigned char a_exiting;
+unsigned char b_exiting;
 unsigned char a_flag;
 unsigned char b_flag;
 unsigned char ending;
@@ -127,10 +129,10 @@ unsigned char c_map[240];
 
 #define TURBO_LOCK_X 112
 #define TURBO_LOCK_Y 113
-#define TURBO_FLAG_A_MAX 73
-#define TURBO_FLAG_A_MIN 63
-#define TURBO_FLAG_B_MAX 96
-#define TURBO_FLAG_B_MIN 86
+#define TURBO_FLAG_A_MAX 78
+#define TURBO_FLAG_A_MIN 62   
+#define TURBO_FLAG_B_MAX 94
+#define TURBO_FLAG_B_MIN 78
 
 enum {
 	LEFT,
@@ -266,10 +268,10 @@ Level 17 - (need to test) Reset the game - Top half of the screen is a grass are
 
 
 const unsigned char * const Level_List[] = {
-	level1_0, level2_0, level3_0, level4_0, level6_0,  //5
+	level1_0, level2, level3, level4_0, level6_0,  //5
 	level5_0, level13_0, level7_0, level8_0, level14_0, //10
   // level16_0, level17_0, level18_0, bigperry_0, perrygetout_0, //14
-  level16_0, level17closedfence, level17openNES, level18_0, bigperry_0, //15
+  level16_0, level17closedfence, level17opennes, level18_0, bigperry_0, //15
   perrygetout_0, perryshouse_0, blackmap
 	};
 
@@ -282,13 +284,13 @@ const unsigned char * const Level_List[] = {
   "A-maze-ing",
   "That's a wrap",
   "Two Player Game",
-  "Tilt your head",  //5
-  "Art Critic",
-  "Gumshoe",
-  "Perry Fighter Two': Turbo",
+  "Funky One Player",  //5 //back to player one
+  "Duck Hunt",
+  "Dog Hunt",
+  "Button Masher",
   "Turbo Advantage",
   "Track and Field", //10
-  "NXEOKSUU",
+  "UUKOESNX",
   "Have you tried reseting?",
   "A HOME Entertainment System",
   "NROM with a view"
@@ -300,10 +302,10 @@ const unsigned char level_text_length[] = {
   10,
   13,
   15,
-  14,  //5
-  10,
-  7,
-  25,
+  16,  //5
+  9,
+  8,
+  13,
   15,
   15, //10
   8,
@@ -329,40 +331,40 @@ const unsigned char level_text_length[] = {
 
 
 const unsigned char level_player_x[] = {
+  32, //1
   32,
-  32,
-  16,
-  16,
+  64,
+  40,
   40,//5
   32,
   32,
-  112,
+  40, // screen scroll
   128,
   40, //10
   32,
   60,
-  32,
-  80,//14 last level
+  128,
+  108,//14 last level
   68, //perry get out
   68,
   32,
 };
 
 const unsigned char level_player_y[] = {
+  64, //1
   64,
-  64,
-  48,
-  48,
+  120,
+  60,
   60, //5
   68,
   48,
-  176,
+  60, // screen scroll
   160,
   40, //10
   176,
   60,
   80,
-  220,
+  208,
   164, //perry get out
   164,
   80,
@@ -390,9 +392,16 @@ const unsigned char title_bg_palette[16]={ 0x0f,0x30,0x1a,0x15,0x0f,0x21,0x11,0x
 // sprite palette
 const unsigned char palette_perrypuzzlesprites_a[16]={ 
   0x2a,0x30,0x0f,0x15,
-  0x2a,0x11,0x21,0x20,
+  0x2a,0x11,0x21,0x30,
   0x2a,0x38,0x17,0x07,
   0x2a,0x0f,0x2d,0x10  };
+
+const unsigned char palette_perrypuzzlesprites_b[16]={ 
+  0x2a,0x30,0x0f,0x15,
+  0x2a,0x0f,0x2d,0x10, 
+  0x2a,0x38,0x17,0x07,
+  0x2a,0x11,0x21,0x30
+};
 
 
 #define COL_ALL 1
