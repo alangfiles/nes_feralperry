@@ -13376,7 +13376,7 @@ L3101:	rts
 .segment	"CODE"
 
 ;
-; ppu_off();
+; ppu_off();  
 ;
 	jsr     _ppu_off
 ;

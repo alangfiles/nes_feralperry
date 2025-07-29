@@ -974,8 +974,7 @@ void level_up(void)
 void init_mode_title(void)
 {
 	// draw the title screen
-	ppu_off();
-	// pal_bg(palette_bg);
+	ppu_off();  
 	clear_vram_buffer();
 	set_data_pointer(title_0);
 	set_mt_pointer(titletiles);
